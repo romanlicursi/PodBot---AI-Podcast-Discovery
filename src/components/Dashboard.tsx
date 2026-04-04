@@ -55,8 +55,9 @@ export function Dashboard({ onSignOut }: DashboardProps) {
   }, [checkConnection, loadExistingRecommendations, loadTasteProfile]);
 
   useEffect(() => {
-    if (isConnected) setStep("analyze");
-    if (tasteProfile) setStep("recommend");
+    if (!isConnected) setStep("connect");
+    else if (tasteProfile) setStep("recommend");
+    else setStep("analyze");
   }, [isConnected, tasteProfile]);
 
   const handleFetchAndAnalyze = async () => {
