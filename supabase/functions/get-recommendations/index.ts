@@ -102,19 +102,22 @@ serve(async (req) => {
       .order("created_at", { ascending: false })
       .limit(30);
 
-    const systemPrompt = `You are a podcast recommendation engine. Based on the user's taste profile, completion data, feedback, playlist saves, and playlist organization, recommend specific podcast episodes they would love.
+    const systemPrompt = `You are a podcast recommendation engine. Based on the user's taste profile, completion data, feedback, and playlist saves, recommend specific podcast episodes they would love.
+
+SIGNAL HIERARCHY (strongest to weakest):
+1. EPISODE COMPLETION (strongest) — Episodes finished 90%+ = they LOVED it. Under 15% = abandoned. This is the ground truth of enjoyment.
+2. EXPLICIT FEEDBACK — Thumbs up/down on recommendations
+3. PLAYLIST SAVES (interest signal, not enjoyment) — Saving to a playlist means the topic/title interested them, but doesn't confirm they enjoyed it
+4. SHOWS FOLLOWED — Baseline interest
 
 CRITICAL RULES:
 - Recommend REAL podcasts and episodes that actually exist
-- Mix recommendations between shows they already follow and NEW shows
 - At least 40% should be NEW shows they don't follow yet
-- HEAVILY WEIGHT completion data: recommend content similar to episodes they FINISH (90%+)
+- PRIORITIZE content similar to episodes they COMPLETE (90%+) — this is the #1 signal
 - AVOID content similar to episodes they ABANDON (<15% completion)
-- Shows they've liked AND finish get the highest recommendation weight
-- PLAYLIST SAVES are the STRONGEST positive signal — when a user saves an episode to a Spotify playlist, it means they're deeply interested in that content. Recommend more like the shows/topics they save.
-- Consider their playlist categories (${(playlistData || []).map((p: any) => p.name).join(", ")}) — recommend episodes that would fit these queues
+- Playlist saves indicate topical interest but NOT quality preference — use them to discover topic areas, not to confirm show quality
 - Each recommendation must include a specific, compelling reason
-- Score each 0-1 based on profile match AND predicted completion likelihood`;
+- Score each 0-1 based on predicted COMPLETION likelihood (not just topical match)`;
 
     const userPrompt = `Taste Profile:
 ${JSON.stringify(tasteProfile.profile_data, null, 2)}
@@ -122,7 +125,7 @@ ${JSON.stringify(tasteProfile.profile_data, null, 2)}
 Shows they currently follow:
 ${JSON.stringify((tasteProfile.listening_history_snapshot as any)?.followed_shows?.map((s: any) => s.name) || [], null, 2)}
 
-Shows they FINISH (high completion — prioritize similar):
+Shows they FINISH (high completion — #1 priority signal):
 ${JSON.stringify(highCompletionShows)}
 
 Shows they ABANDON (low completion — avoid similar):
@@ -131,9 +134,8 @@ ${JSON.stringify(abandonedShows)}
 Shows they've liked via feedback: ${JSON.stringify(likedShows)}
 Shows they've disliked via feedback: ${JSON.stringify(dislikedShows)}
 
-Episodes they SAVED to Spotify playlists (strongest intent signal):
+Episodes saved to Spotify playlists (topical interest, not quality confirmation):
 ${JSON.stringify(playlistSaveSummary.slice(0, 20))}
-Shows frequently saved to playlists: ${JSON.stringify([...new Set(savedToPlaylistShows)])}
 
 Their in-app queues contain: ${JSON.stringify((playlistItems || []).map((i: any) => `${i.episode_name} (${i.show_name})`).slice(0, 15))}
 
