@@ -31,19 +31,23 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-hero noise flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Ambient orbs */}
+      <div className="absolute top-1/3 -left-40 w-96 h-96 rounded-full bg-primary/8 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/3 -right-40 w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none" />
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-md"
+        className="w-full max-w-md relative z-10"
       >
         <div className="text-center mb-10">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-gold mb-6"
+            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-gold shadow-glow mb-6"
           >
             <Headphones className="w-8 h-8 text-primary-foreground" />
           </motion.div>
@@ -55,46 +59,48 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="pl-10 bg-secondary border-border h-12"
-              required
-            />
-          </div>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="pl-10 bg-secondary border-border h-12"
-              required
-              minLength={6}
-            />
-          </div>
+        <div className="glass-strong rounded-2xl p-6 shadow-card">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="pl-10 bg-secondary/50 border-border h-12 focus:border-primary/50 transition-colors"
+                required
+              />
+            </div>
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="pl-10 bg-secondary/50 border-border h-12 focus:border-primary/50 transition-colors"
+                required
+                minLength={6}
+              />
+            </div>
 
-          {error && (
-            <p className="text-destructive text-sm">{error}</p>
-          )}
-          {success && (
-            <p className="text-green-400 text-sm">{success}</p>
-          )}
+            {error && (
+              <p className="text-destructive text-sm">{error}</p>
+            )}
+            {success && (
+              <p className="text-green-400 text-sm">{success}</p>
+            )}
 
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full h-12 bg-gradient-gold text-primary-foreground font-semibold text-base hover:opacity-90 transition-opacity"
-          >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : isSignUp ? "Create Account" : "Sign In"}
-          </Button>
-        </form>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full h-12 bg-gradient-gold text-primary-foreground font-semibold text-base hover:opacity-90 transition-opacity shadow-glow btn-press"
+            >
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : isSignUp ? "Create Account" : "Sign In"}
+            </Button>
+          </form>
+        </div>
 
         <p className="text-center mt-6 text-muted-foreground text-sm">
           {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}

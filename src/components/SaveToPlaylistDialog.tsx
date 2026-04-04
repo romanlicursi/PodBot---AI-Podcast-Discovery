@@ -74,7 +74,6 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
     setSaving(playlist.id);
 
     try {
-      // Build episode URI — Spotify episode URIs are spotify:episode:{id}
       const episodeUri = episode.episode_id
         ? `spotify:episode:${episode.episode_id}`
         : null;
@@ -94,7 +93,6 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
       });
       if (error) throw error;
 
-      // Track the save for the algorithm
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         await supabase.from("playlist_saves").insert({
@@ -110,7 +108,6 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
       setSaved(playlist.id);
       toast({ title: `Added to "${playlist.name}"` });
 
-      // Close after a brief moment
       setTimeout(() => onClose(), 800);
     } catch (err: any) {
       toast({ title: "Failed to add", description: err.message, variant: "destructive" });
@@ -125,9 +122,9 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-card border-border max-w-sm max-h-[80vh] flex flex-col">
+      <DialogContent className="glass-strong border-border max-w-sm max-h-[80vh] flex flex-col shadow-glow">
         <DialogHeader>
-          <DialogTitle className="font-display text-foreground">Add to Spotify Playlist</DialogTitle>
+          <DialogTitle className="font-display text-foreground tracking-tight">Add to Spotify Playlist</DialogTitle>
         </DialogHeader>
 
         {episode && (
@@ -136,18 +133,16 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
           </p>
         )}
 
-        {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
           <Input
             placeholder="Search playlists..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 h-9 bg-secondary border-border text-sm"
+            className="pl-9 h-9 bg-secondary/50 border-border text-sm focus:border-primary/50 transition-colors"
           />
         </div>
 
-        {/* Playlist list */}
         <div className="flex-1 overflow-y-auto space-y-1.5 min-h-0 pr-1">
           {loading ? (
             <div className="flex items-center justify-center py-8">
@@ -163,9 +158,9 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
                 key={p.id}
                 onClick={() => handleAddToPlaylist(p)}
                 disabled={saving !== null}
-                className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-secondary transition-colors text-left disabled:opacity-50"
+                className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-all text-left disabled:opacity-50 group/item"
               >
-                <div className="w-10 h-10 rounded-lg bg-secondary flex-shrink-0 overflow-hidden flex items-center justify-center">
+                <div className="w-10 h-10 rounded-lg bg-secondary/50 flex-shrink-0 overflow-hidden flex items-center justify-center ring-1 ring-border">
                   {p.image_url ? (
                     <img src={p.image_url} alt="" className="w-full h-full object-cover" />
                   ) : (
@@ -173,7 +168,7 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{p.name}</p>
+                  <p className="text-sm font-medium text-foreground truncate group-hover/item:text-primary transition-colors">{p.name}</p>
                   <p className="text-xs text-muted-foreground">{p.track_count} tracks</p>
                 </div>
                 {saving === p.id && <Loader2 className="w-4 h-4 animate-spin text-primary flex-shrink-0" />}

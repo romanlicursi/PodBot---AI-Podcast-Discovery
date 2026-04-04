@@ -37,10 +37,10 @@ export function RecommendationCard({ rec, onFeedback, onSaveToPlaylist, index }:
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.08 }}
-      className="bg-gradient-card border border-border rounded-2xl p-5 shadow-card hover:shadow-glow transition-shadow duration-300 group"
+      className="glass rounded-2xl p-5 shadow-card hover-lift group"
     >
       <div className="flex gap-4">
-        <div className="w-16 h-16 rounded-xl bg-secondary flex-shrink-0 flex items-center justify-center overflow-hidden">
+        <div className="w-16 h-16 rounded-xl bg-secondary/50 flex-shrink-0 flex items-center justify-center overflow-hidden ring-1 ring-border">
           {rec.image_url ? (
             <img src={rec.image_url} alt="" className="w-full h-full object-cover rounded-xl" />
           ) : (
@@ -53,12 +53,12 @@ export function RecommendationCard({ rec, onFeedback, onSaveToPlaylist, index }:
               <h3 className="font-display font-semibold text-foreground truncate">{rec.episode_name}</h3>
               <p className="text-sm text-muted-foreground truncate">{rec.show_name}</p>
             </div>
-            <div className="flex gap-1 flex-shrink-0">
+            <div className="flex gap-1.5 flex-shrink-0">
               {rec.is_new_show && (
-                <Badge variant="outline" className="border-primary text-primary text-xs">New Show</Badge>
+                <Badge variant="outline" className="border-accent/50 text-accent text-xs tracking-wide">New</Badge>
               )}
               {rec.score && (
-                <Badge variant="secondary" className="text-xs">{Math.round(rec.score * 100)}%</Badge>
+                <Badge variant="secondary" className="text-xs bg-primary/10 text-primary border-0">{Math.round(rec.score * 100)}%</Badge>
               )}
             </div>
           </div>
@@ -77,13 +77,13 @@ export function RecommendationCard({ rec, onFeedback, onSaveToPlaylist, index }:
         </p>
       )}
 
-      <div className="flex items-center justify-between mt-4 pt-3 border-t border-border">
+      <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/50">
         <div className="flex gap-1">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => handleFeedback("liked")}
-            className={`h-8 w-8 p-0 ${feedback === "liked" ? "text-primary bg-primary/10" : "text-muted-foreground"}`}
+            className={`h-8 w-8 p-0 btn-press ${feedback === "liked" ? "text-primary bg-primary/10" : "text-muted-foreground hover:text-primary"}`}
           >
             <ThumbsUp className="w-4 h-4" />
           </Button>
@@ -91,7 +91,7 @@ export function RecommendationCard({ rec, onFeedback, onSaveToPlaylist, index }:
             variant="ghost"
             size="sm"
             onClick={() => handleFeedback("disliked")}
-            className={`h-8 w-8 p-0 ${feedback === "disliked" ? "text-destructive bg-destructive/10" : "text-muted-foreground"}`}
+            className={`h-8 w-8 p-0 btn-press ${feedback === "disliked" ? "text-destructive bg-destructive/10" : "text-muted-foreground hover:text-destructive"}`}
           >
             <ThumbsDown className="w-4 h-4" />
           </Button>
@@ -99,8 +99,8 @@ export function RecommendationCard({ rec, onFeedback, onSaveToPlaylist, index }:
             variant="ghost"
             size="sm"
             onClick={() => onSaveToPlaylist(rec)}
-            className="h-8 w-8 p-0 text-muted-foreground hover:text-primary"
-            title="Save to queue"
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-accent btn-press"
+            title="Save to Spotify playlist"
           >
             <FolderPlus className="w-4 h-4" />
           </Button>

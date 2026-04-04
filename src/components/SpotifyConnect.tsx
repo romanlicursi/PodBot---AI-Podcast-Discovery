@@ -24,10 +24,10 @@ export function SpotifyConnect({
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-gradient-card border border-border rounded-2xl p-6 shadow-card"
+        className="glass rounded-2xl p-6 shadow-card"
       >
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-gold flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-gradient-gold flex items-center justify-center shadow-glow">
             <Wifi className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
@@ -38,7 +38,7 @@ export function SpotifyConnect({
         <Button
           onClick={onFetchData}
           disabled={isLoadingData}
-          className="w-full bg-gradient-gold text-primary-foreground hover:opacity-90"
+          className="w-full bg-gradient-gold text-primary-foreground hover:opacity-90 shadow-glow btn-press"
         >
           {isLoadingData ? (
             <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Fetching your podcasts...</>
@@ -51,7 +51,7 @@ export function SpotifyConnect({
             onClick={onDisconnect}
             variant="ghost"
             size="sm"
-            className="w-full mt-2 text-muted-foreground text-xs"
+            className="w-full mt-2 text-muted-foreground text-xs btn-press"
           >
             Disconnect & Reconnect Spotify
           </Button>
@@ -64,22 +64,22 @@ export function SpotifyConnect({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-gradient-card border border-border rounded-2xl p-8 shadow-card text-center"
+      className="glass rounded-2xl p-10 shadow-card text-center"
     >
-      <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary mb-6">
+      <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 mb-6 animate-float">
         <Headphones className="w-8 h-8 text-primary" />
       </div>
-      <h2 className="text-2xl font-display font-bold text-foreground mb-2">
+      <h2 className="text-2xl font-display font-bold text-foreground mb-2 tracking-tight">
         Connect Spotify
       </h2>
-      <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
+      <p className="text-muted-foreground mb-8 max-w-sm mx-auto leading-relaxed">
         Link your Spotify account so we can learn what podcasts you love and find new ones you'll enjoy.
       </p>
       <Button
         onClick={onConnect}
         disabled={isConnecting}
         size="lg"
-        className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-8"
+        className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-8 shadow-glow btn-press"
       >
         {isConnecting ? (
           <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Connecting...</>
