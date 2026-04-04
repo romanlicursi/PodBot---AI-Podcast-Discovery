@@ -80,7 +80,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
               <Headphones className="w-4 h-4 text-primary-foreground" />
             </div>
             <span className="font-display font-bold text-lg text-foreground">
-              Pod<span className="text-gradient-gold">Pulse</span>
+              Pod<span className="text-gradient-gold">Bot</span>
             </span>
           </div>
           <div className="flex items-center gap-2">

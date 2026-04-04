@@ -33,7 +33,7 @@ const slides = [
     icon: Sparkles,
     title: "Ready to Discover",
     subtitle: "Sync and analyze your listening history",
-    description: "Connect your Spotify and let PodPulse decode your podcast DNA. You will get personalized recommendations powered by AI that truly understands what you love.",
+    description: "Connect your Spotify and let PodBot decode your podcast DNA. You will get personalized recommendations powered by AI that truly understands what you love.",
     visual: "ready",
   },
 ];

@@ -1,6 +1,6 @@
 {
-  "name": "PodPulse",
-  "short_name": "PodPulse",
+  "name": "PodBot",
+  "short_name": "PodBot",
   "description": "AI-powered podcast discovery engine",
   "start_url": "/",
   "display": "standalone",

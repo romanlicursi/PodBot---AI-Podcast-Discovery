@@ -51,7 +51,7 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
             <Headphones className="w-8 h-8 text-primary-foreground" />
           </motion.div>
           <h1 className="text-4xl font-display font-bold text-foreground mb-2">
-            Pod<span className="text-gradient-gold">Pulse</span>
+            Pod<span className="text-gradient-gold">Bot</span>
           </h1>
           <p className="text-muted-foreground text-lg">
             AI-powered podcast discovery
