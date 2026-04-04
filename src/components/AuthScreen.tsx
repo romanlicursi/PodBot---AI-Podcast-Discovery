@@ -83,6 +83,9 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
           {error && (
             <p className="text-destructive text-sm">{error}</p>
           )}
+          {success && (
+            <p className="text-green-400 text-sm">{success}</p>
+          )}
 
           <Button
             type="submit"
