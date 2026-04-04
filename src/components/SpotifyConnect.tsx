@@ -6,6 +6,7 @@ interface SpotifyConnectProps {
   isConnected: boolean;
   isConnecting: boolean;
   onConnect: () => void;
+  onDisconnect?: () => void;
   onFetchData: () => void;
   isLoadingData: boolean;
 }
