@@ -43,6 +43,14 @@ serve(async (req) => {
       .order("created_at", { ascending: false })
       .limit(50);
 
+    // Get episode completions for understanding what they actually finish
+    const { data: completions } = await supabase
+      .from("episode_completions")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("last_played_at", { ascending: false })
+      .limit(100);
+
     const likedShows = feedback
       ?.filter((f: any) => f.feedback === "liked")
       .map((f: any) => f.recommendations?.show_name) || [];
@@ -50,15 +58,50 @@ serve(async (req) => {
       ?.filter((f: any) => f.feedback === "disliked")
       .map((f: any) => f.recommendations?.show_name) || [];
 
-    const systemPrompt = `You are a podcast recommendation engine. Based on the user's taste profile and feedback history, recommend specific podcast episodes they would love.
+    // Identify high-completion shows (episodes they actually finish)
+    const completionByShow: Record<string, { total: number; avgCompletion: number }> = {};
+    for (const c of (completions || []) as any[]) {
+      if (!completionByShow[c.show_name]) {
+        completionByShow[c.show_name] = { total: 0, avgCompletion: 0 };
+      }
+      const entry = completionByShow[c.show_name];
+      entry.avgCompletion = (entry.avgCompletion * entry.total + c.completion_pct) / (entry.total + 1);
+      entry.total++;
+    }
+
+    const highCompletionShows = Object.entries(completionByShow)
+      .filter(([, stats]) => stats.avgCompletion >= 0.7)
+      .map(([name, stats]) => `${name} (avg ${Math.round(stats.avgCompletion * 100)}% completion)`);
+    
+    const abandonedShows = Object.entries(completionByShow)
+      .filter(([, stats]) => stats.avgCompletion < 0.2)
+      .map(([name]) => name);
+
+    // Get playlist queues to understand what topics they actively organize
+    const { data: playlistData } = await supabase
+      .from("playlist_queues")
+      .select("name, category")
+      .eq("user_id", user.id);
+    
+    const { data: playlistItems } = await supabase
+      .from("playlist_items")
+      .select("show_name, episode_name")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(30);
+
+    const systemPrompt = `You are a podcast recommendation engine. Based on the user's taste profile, completion data, feedback, and playlist organization, recommend specific podcast episodes they would love.
 
 CRITICAL RULES:
 - Recommend REAL podcasts and episodes that actually exist
-- Mix recommendations between shows they already follow and NEW shows they'd enjoy
-- At least 40% of recommendations should be from NEW shows they don't follow yet
-- Each recommendation should include a specific, compelling reason
-- Score each recommendation 0-1 based on how well it matches their profile
-- Avoid recommending shows they've disliked`;
+- Mix recommendations between shows they already follow and NEW shows
+- At least 40% should be NEW shows they don't follow yet
+- HEAVILY WEIGHT completion data: recommend content similar to episodes they FINISH (90%+)
+- AVOID content similar to episodes they ABANDON (<15% completion)
+- Shows they've liked AND finish get the highest recommendation weight
+- Consider their playlist categories (${(playlistData || []).map((p: any) => p.name).join(", ")}) — recommend episodes that would fit these queues
+- Each recommendation must include a specific, compelling reason
+- Score each 0-1 based on profile match AND predicted completion likelihood`;
 
     const userPrompt = `Taste Profile:
 ${JSON.stringify(tasteProfile.profile_data, null, 2)}
@@ -66,8 +109,18 @@ ${JSON.stringify(tasteProfile.profile_data, null, 2)}
 Shows they currently follow:
 ${JSON.stringify((tasteProfile.listening_history_snapshot as any)?.followed_shows?.map((s: any) => s.name) || [], null, 2)}
 
-Shows they've liked in recommendations: ${JSON.stringify(likedShows)}
-Shows they've disliked in recommendations: ${JSON.stringify(dislikedShows)}
+Shows they FINISH (high completion — prioritize similar):
+${JSON.stringify(highCompletionShows)}
+
+Shows they ABANDON (low completion — avoid similar):
+${JSON.stringify(abandonedShows)}
+
+Shows they've liked via feedback: ${JSON.stringify(likedShows)}
+Shows they've disliked via feedback: ${JSON.stringify(dislikedShows)}
+
+Their playlist queues contain: ${JSON.stringify((playlistItems || []).map((i: any) => `${i.episode_name} (${i.show_name})`).slice(0, 15))}
+
+Analysis count: ${tasteProfile.analysis_count} (${tasteProfile.analysis_count > 3 ? "well-calibrated profile, be bold with new discoveries" : "still learning, balance familiar and new"})
 
 Please recommend 8-12 specific podcast episodes.`;
 
@@ -101,6 +154,7 @@ Please recommend 8-12 specific podcast episodes.`;
                       reason: { type: "string" },
                       is_new_show: { type: "boolean" },
                       score: { type: "number" },
+                      suggested_playlist: { type: "string", description: "Which playlist category this fits: philosophy, literature, comedy, or none" },
                     },
                     required: ["episode_name", "show_name", "reason", "is_new_show", "score"],
                   },

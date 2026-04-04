@@ -35,27 +35,54 @@ serve(async (req) => {
       .eq("user_id", user.id)
       .single();
 
+    // Get episode completions for completion-weighted analysis
+    const { data: completions } = await supabase
+      .from("episode_completions")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("last_played_at", { ascending: false })
+      .limit(100);
+
     const previousProfile = existingProfile?.profile_data || {};
     const analysisCount = (existingProfile?.analysis_count || 0) + 1;
 
-    const systemPrompt = `You are a podcast taste analyst. Analyze the user's podcast listening history and any feedback they've given on previous recommendations. Build a cumulative taste profile that gets more refined with each analysis.
+    // Build completion summary for the AI
+    const completionSummary = (completions || []).map((c: any) => ({
+      episode: c.episode_name,
+      show: c.show_name,
+      completion: `${Math.round(c.completion_pct * 100)}%`,
+      signal: c.completion_pct >= 0.9 ? "loved" : c.completion_pct >= 0.5 ? "interested" : c.completion_pct >= 0.15 ? "tried" : "abandoned",
+    }));
 
-${existingProfile ? `This is analysis #${analysisCount}. Here is their previous taste profile to refine:\n${JSON.stringify(previousProfile)}` : "This is the first analysis for this user."}
+    const systemPrompt = `You are a podcast taste analyst. Analyze the user's podcast listening history, completion rates, and feedback to build a cumulative taste profile.
+
+CRITICAL: Episode completion rates are the strongest signal of preference:
+- 90-100% completion = LOVED this content, strongly favor similar content
+- 50-89% completion = Interested but not fully engaged
+- 15-49% completion = Tried but lost interest — note what might have turned them off
+- Under 15% = Abandoned quickly — this is a NEGATIVE signal, avoid similar content
+- Weight completed episodes 3x more than abandoned ones when building the profile
+
+${existingProfile ? `This is analysis #${analysisCount}. Refine their previous taste profile:\n${JSON.stringify(previousProfile)}` : "This is the first analysis for this user."}
 
 Return a JSON object using tool calling with these fields:
-- topics: array of topics they enjoy (ranked by interest level)
+- topics: array of topics they enjoy (ranked by interest level, weighted by completion)
 - preferred_formats: array (e.g., "interview", "narrative", "solo commentary", "panel discussion")
 - preferred_length: string (e.g., "short (< 30 min)", "medium (30-60 min)", "long (60+ min)")
 - tone_preferences: array (e.g., "educational", "comedic", "serious", "conversational")
 - key_interests: array of specific subjects or themes
-- avoid_topics: array of topics they seem to dislike (based on negative feedback)
-- listening_patterns: object with any patterns noticed
+- avoid_topics: array of topics they seem to dislike (from abandoned episodes and negative feedback)
+- listening_patterns: object with patterns noticed (completion tendencies, preferred times, etc.)
+- completion_insights: object summarizing what types of content they finish vs abandon
 - confidence_score: number 0-1 indicating how confident you are in this profile`;
 
-    const userPrompt = `Here is the listening data to analyze:
+    const userPrompt = `Listening data:
 
-Recently played podcast episodes:
+Recently played episodes with completion data:
 ${JSON.stringify(listening_data.recently_played || [], null, 2)}
+
+Episode completion summary (strongest signal):
+${JSON.stringify(completionSummary, null, 2)}
 
 Shows they follow:
 ${JSON.stringify(listening_data.followed_shows || [], null, 2)}
@@ -88,6 +115,7 @@ ${feedback_history ? `Feedback on previous recommendations:\n${JSON.stringify(fe
                 key_interests: { type: "array", items: { type: "string" } },
                 avoid_topics: { type: "array", items: { type: "string" } },
                 listening_patterns: { type: "object" },
+                completion_insights: { type: "object" },
                 confidence_score: { type: "number" },
               },
               required: ["topics", "preferred_formats", "preferred_length", "tone_preferences", "key_interests", "confidence_score"],
