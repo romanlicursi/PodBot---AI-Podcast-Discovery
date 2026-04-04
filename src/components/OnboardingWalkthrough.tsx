@@ -167,7 +167,7 @@ function ReadyVisual() {
       />
       <motion.div
         className="absolute w-28 h-28 rounded-full"
-        style={{ background: "radial-gradient(circle, hsl(185 72% 48% / 0.08), transparent)" }}
+        style={{ background: "radial-gradient(circle, hsl(17 88% 56% / 0.08), transparent)" }}
         animate={{ scale: [1.2, 0.9, 1.2], opacity: [0.3, 0.5, 0.3] }}
         transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
       />
