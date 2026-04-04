@@ -55,9 +55,15 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
         body: { action: "get_playlists" },
       });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
       setPlaylists(data.playlists || []);
     } catch (err: any) {
-      toast({ title: "Failed to load playlists", description: err.message, variant: "destructive" });
+      const msg = err.message || "Unknown error";
+      if (msg.includes("reconnect") || msg.includes("permission")) {
+        toast({ title: "Reconnect Spotify needed", description: "Please disconnect and reconnect Spotify to grant playlist permissions.", variant: "destructive" });
+      } else {
+        toast({ title: "Failed to load playlists", description: msg, variant: "destructive" });
+      }
     } finally {
       setLoading(false);
     }
