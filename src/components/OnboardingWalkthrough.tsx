@@ -12,28 +12,28 @@ const slides = [
     icon: Headphones,
     title: "Your Podcast DNA",
     subtitle: "We decode your listening patterns",
-    description: "PodSense connects to your Spotify and analyzes every podcast episode you've ever played — not just what you follow, but what you actually finish.",
+    description: "PodPulse connects to your Spotify and analyzes every podcast episode you have ever played. Not just what you follow, but what you actually finish.",
     visual: "dna",
   },
   {
     icon: Brain,
     title: "Completion Intelligence",
     subtitle: "We know what you really love",
-    description: "An episode you finished 100%? That's a strong signal. One you abandoned after 3 minutes? We learn from that too. Your completion patterns reveal your true taste — far better than likes or follows ever could.",
+    description: "An episode you finished 100%? That is a strong signal. One you abandoned after 3 minutes? We learn from that too. Your completion patterns reveal your true taste, far better than likes or follows ever could.",
     visual: "completion",
   },
   {
     icon: TrendingUp,
     title: "Always Learning",
     subtitle: "Gets smarter with every interaction",
-    description: "Rate recommendations, save episodes to your Spotify playlists, and keep listening. Every signal feeds back into your taste profile — the algorithm evolves with you.",
+    description: "Rate recommendations, save episodes to your Spotify playlists, and keep listening. Every signal feeds back into your taste profile. The algorithm evolves with you.",
     visual: "learning",
   },
   {
     icon: Sparkles,
     title: "Ready to Discover",
-    subtitle: "Sync & analyze your listening history",
-    description: "Connect your Spotify and let PodSense decode your podcast DNA. You'll get personalized recommendations powered by AI that truly understands what you love.",
+    subtitle: "Sync and analyze your listening history",
+    description: "Connect your Spotify and let PodPulse decode your podcast DNA. You will get personalized recommendations powered by AI that truly understands what you love.",
     visual: "ready",
   },
 ];
@@ -45,7 +45,7 @@ function DNAVisual() {
         <motion.div
           key={i}
           className="absolute w-3 h-3 rounded-full bg-primary"
-          style={{ boxShadow: "0 0 12px hsl(263 70% 55% / 0.5)" }}
+          style={{ boxShadow: "0 0 12px hsl(185 72% 48% / 0.5)" }}
           initial={{ opacity: 0 }}
           animate={{
             opacity: [0.3, 1, 0.3],
@@ -68,7 +68,7 @@ function DNAVisual() {
           style={{
             width: "120px",
             rotate: `${i * 30}deg`,
-            background: "linear-gradient(90deg, transparent, hsl(263 70% 55% / 0.3), transparent)",
+            background: "linear-gradient(90deg, transparent, hsl(185 72% 48% / 0.3), transparent)",
           }}
           initial={{ opacity: 0, scaleX: 0 }}
           animate={{ opacity: [0, 0.6, 0], scaleX: [0, 1, 0] }}
@@ -91,8 +91,8 @@ function DNAVisual() {
 
 function CompletionVisual() {
   const bars = [
-    { label: "Loved it", pct: 95, gradient: "from-primary to-accent" },
-    { label: "Enjoyed", pct: 72, gradient: "from-primary/80 to-primary/50" },
+    { label: "Loved it", pct: 95, gradient: "from-primary to-primary/70" },
+    { label: "Enjoyed", pct: 72, gradient: "from-primary/60 to-primary/40" },
     { label: "Meh", pct: 35, gradient: "from-muted-foreground/40 to-muted-foreground/20" },
     { label: "Skipped", pct: 8, gradient: "from-destructive/50 to-destructive/30" },
   ];
@@ -161,13 +161,13 @@ function ReadyVisual() {
     <div className="relative w-full h-52 flex items-center justify-center">
       <motion.div
         className="absolute w-44 h-44 rounded-full"
-        style={{ background: "radial-gradient(circle, hsl(263 70% 55% / 0.15), transparent)" }}
+        style={{ background: "radial-gradient(circle, hsl(185 72% 48% / 0.15), transparent)" }}
         animate={{ scale: [1, 1.4, 1], opacity: [0.5, 0.2, 0.5] }}
         transition={{ duration: 3, repeat: Infinity }}
       />
       <motion.div
         className="absolute w-28 h-28 rounded-full"
-        style={{ background: "radial-gradient(circle, hsl(38 92% 50% / 0.1), transparent)" }}
+        style={{ background: "radial-gradient(circle, hsl(185 72% 48% / 0.08), transparent)" }}
         animate={{ scale: [1.2, 0.9, 1.2], opacity: [0.3, 0.5, 0.3] }}
         transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
       />
@@ -198,9 +198,8 @@ export function OnboardingWalkthrough({ onComplete }: OnboardingWalkthroughProps
 
   return (
     <div className="min-h-screen bg-gradient-hero noise flex flex-col items-center justify-center p-6 relative overflow-hidden">
-      {/* Ambient glow orbs */}
       <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-accent/5 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-primary/3 blur-3xl pointer-events-none" />
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -229,7 +228,6 @@ export function OnboardingWalkthrough({ onComplete }: OnboardingWalkthroughProps
         </motion.div>
       </AnimatePresence>
 
-      {/* Progress dots */}
       <div className="flex gap-2.5 mt-12 mb-8 relative z-10">
         {slides.map((_, i) => (
           <button
@@ -265,7 +263,7 @@ export function OnboardingWalkthrough({ onComplete }: OnboardingWalkthroughProps
             size="lg"
             className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-8 shadow-glow btn-press"
           >
-            <Sparkles className="w-4 h-4 mr-2" /> Sync & Analyze Listening History
+            <Sparkles className="w-4 h-4 mr-2" /> Sync and Analyze Listening History
           </Button>
         )}
       </div>

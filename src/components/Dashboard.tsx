@@ -80,7 +80,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
               <Headphones className="w-4 h-4 text-primary-foreground" />
             </div>
             <span className="font-display font-bold text-lg text-foreground">
-              Pod<span className="text-gradient-gold">Sense</span>
+              Pod<span className="text-gradient-gold">Pulse</span>
             </span>
           </div>
           <div className="flex items-center gap-2">
@@ -185,7 +185,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
                   ))}
                 </div>
                 <p className="text-center text-muted-foreground text-xs mt-8 tracking-wide">
-                  👆 Rate episodes & save to Spotify playlists — the algorithm learns from every interaction!
+                  👆 Rate episodes and save to Spotify playlists. The algorithm learns from every interaction!
                 </p>
               </div>
             )}

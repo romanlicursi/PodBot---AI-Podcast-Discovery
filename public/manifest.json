@@ -1,11 +1,11 @@
 {
-  "name": "PodSense",
-  "short_name": "PodSense",
+  "name": "PodPulse",
+  "short_name": "PodPulse",
   "description": "AI-powered podcast discovery engine",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0a0b",
-  "theme_color": "#d4a853",
+  "background_color": "#0b0d14",
+  "theme_color": "#1a9fa0",
   "orientation": "portrait-primary",
   "icons": [
     {

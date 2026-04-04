@@ -129,7 +129,7 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
 
         {episode && (
           <p className="text-xs text-muted-foreground truncate -mt-1">
-            {episode.episode_name} — {episode.show_name}
+            {episode.episode_name} · {episode.show_name}
           </p>
         )}
 
