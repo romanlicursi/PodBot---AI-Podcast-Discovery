@@ -104,8 +104,8 @@
     background: hsl(230 15% 9% / 0.75);
     backdrop-filter: blur(32px);
     -webkit-backdrop-filter: blur(32px);
-    border: 1px solid hsl(185 72% 48% / 0.12);
-    border-top-color: hsl(185 72% 48% / 0.22);
+    border: 1px solid hsl(17 88% 56% / 0.12);
+    border-top-color: hsl(17 88% 56% / 0.22);
   }
 
   .noise {
