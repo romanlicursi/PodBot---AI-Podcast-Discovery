@@ -14,13 +14,19 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccess("");
     const { error } = await onAuth(email, password, isSignUp);
-    if (error) setError(error.message);
+    if (error) {
+      setError(error.message);
+    } else if (isSignUp) {
+      setSuccess("Account created! You can now sign in.");
+    }
     setLoading(false);
   };
 
@@ -76,6 +82,9 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
 
           {error && (
             <p className="text-destructive text-sm">{error}</p>
+          )}
+          {success && (
+            <p className="text-green-400 text-sm">{success}</p>
           )}
 
           <Button
