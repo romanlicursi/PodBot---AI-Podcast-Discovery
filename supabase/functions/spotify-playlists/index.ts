@@ -13,7 +13,7 @@ async function getValidToken(supabase: any, userId: string, clientId: string, cl
     .eq("user_id", userId)
     .single();
 
-  if (!tokenData) throw new Error("No Spotify connection found");
+  if (!tokenData) throw new Error("No Spotify connection found. Please reconnect Spotify with playlist permissions.");
 
   if (new Date(tokenData.expires_at) > new Date()) {
     return tokenData.access_token;
@@ -30,6 +30,12 @@ async function getValidToken(supabase: any, userId: string, clientId: string, cl
       refresh_token: tokenData.refresh_token,
     }),
   });
+
+  if (!refreshResponse.ok) {
+    const errText = await refreshResponse.text();
+    console.error("Token refresh failed:", errText);
+    throw new Error("Spotify token refresh failed. Please reconnect Spotify.");
+  }
 
   const newTokens = await refreshResponse.json();
   const expiresAt = new Date(Date.now() + newTokens.expires_in * 1000).toISOString();
@@ -69,14 +75,21 @@ serve(async (req) => {
     const { action, playlist_id, episode_uri } = await req.json();
 
     if (action === "get_playlists") {
-      // Fetch user's playlists from Spotify
+      console.log("Fetching playlists for user:", user.id);
       const response = await fetch("https://api.spotify.com/v1/me/playlists?limit=50", {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
-      if (!response.ok) throw new Error("Failed to fetch playlists");
-      const data = await response.json();
+      if (!response.ok) {
+        const errBody = await response.text();
+        console.error("Spotify playlists API error:", response.status, errBody);
+        if (response.status === 403) {
+          throw new Error("Playlist access denied. Please reconnect Spotify to grant playlist permissions.");
+        }
+        throw new Error(`Failed to fetch playlists (${response.status})`);
+      }
 
+      const data = await response.json();
       const playlists = (data.items || []).map((p: any) => ({
         id: p.id,
         name: p.name,
@@ -97,21 +110,20 @@ serve(async (req) => {
         throw new Error("playlist_id and episode_uri are required");
       }
 
-      // Add episode to Spotify playlist
+      console.log("Adding to playlist:", playlist_id, "uri:", episode_uri);
       const response = await fetch(`https://api.spotify.com/v1/playlists/${playlist_id}/tracks`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          uris: [episode_uri],
-        }),
+        body: JSON.stringify({ uris: [episode_uri] }),
       });
 
       if (!response.ok) {
         const errText = await response.text();
-        throw new Error(`Failed to add to playlist: ${errText}`);
+        console.error("Add to playlist failed:", response.status, errText);
+        throw new Error(`Failed to add to playlist (${response.status})`);
       }
 
       return new Response(JSON.stringify({ success: true }), {
@@ -122,6 +134,7 @@ serve(async (req) => {
     throw new Error(`Unknown action: ${action}`);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("spotify-playlists error:", message);
     return new Response(JSON.stringify({ error: message }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
