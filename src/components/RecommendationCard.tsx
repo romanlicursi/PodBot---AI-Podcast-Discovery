@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ThumbsUp, ThumbsDown, Bookmark, ExternalLink, Sparkles } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Bookmark, ExternalLink, Sparkles, FolderPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import type { Playlist } from "@/hooks/usePlaylists";
 
 interface Recommendation {
   id: string;
@@ -19,10 +20,11 @@ interface Recommendation {
 interface RecommendationCardProps {
   rec: Recommendation;
   onFeedback: (id: string, feedback: "liked" | "disliked" | "saved") => void;
+  onSaveToPlaylist: (rec: Recommendation) => void;
   index: number;
 }
 
-export function RecommendationCard({ rec, onFeedback, index }: RecommendationCardProps) {
+export function RecommendationCard({ rec, onFeedback, onSaveToPlaylist, index }: RecommendationCardProps) {
   const [feedback, setFeedback] = useState<string | null>(null);
 
   const handleFeedback = (type: "liked" | "disliked" | "saved") => {
@@ -96,10 +98,11 @@ export function RecommendationCard({ rec, onFeedback, index }: RecommendationCar
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => handleFeedback("saved")}
-            className={`h-8 w-8 p-0 ${feedback === "saved" ? "text-primary bg-primary/10" : "text-muted-foreground"}`}
+            onClick={() => onSaveToPlaylist(rec)}
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-primary"
+            title="Save to queue"
           >
-            <Bookmark className="w-4 h-4" />
+            <FolderPlus className="w-4 h-4" />
           </Button>
         </div>
         {rec.external_url && (

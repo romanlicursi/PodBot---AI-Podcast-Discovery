@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Headphones, LogOut, RefreshCw, Loader2, Sparkles } from "lucide-react";
+import { Headphones, LogOut, RefreshCw, Loader2, Sparkles, ListMusic } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SpotifyConnect } from "@/components/SpotifyConnect";
 import { RecommendationCard } from "@/components/RecommendationCard";
 import { TasteProfileView } from "@/components/TasteProfileView";
+import { PlaylistView } from "@/components/PlaylistView";
+import { SaveToPlaylistDialog } from "@/components/SaveToPlaylistDialog";
 import { useSpotify } from "@/hooks/useSpotify";
 import { useRecommendations } from "@/hooks/useRecommendations";
+import { usePlaylists } from "@/hooks/usePlaylists";
 
 interface DashboardProps {
   onSignOut: () => void;
 }
+
+type Tab = "discover" | "queues";
 
 export function Dashboard({ onSignOut }: DashboardProps) {
   const {
@@ -35,7 +40,12 @@ export function Dashboard({ onSignOut }: DashboardProps) {
     submitFeedback,
   } = useRecommendations();
 
+  const { playlists, addToPlaylist, removeFromPlaylist, markListened } = usePlaylists();
+
   const [step, setStep] = useState<"connect" | "analyze" | "recommend">("connect");
+  const [tab, setTab] = useState<Tab>("discover");
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false);
+  const [selectedRec, setSelectedRec] = useState<any>(null);
 
   useEffect(() => {
     checkConnection();
@@ -56,6 +66,24 @@ export function Dashboard({ onSignOut }: DashboardProps) {
     }
   };
 
+  const handleSaveToPlaylist = (rec: any) => {
+    setSelectedRec(rec);
+    setSaveDialogOpen(true);
+  };
+
+  const handlePlaylistSelect = async (playlistId: string) => {
+    if (!selectedRec) return;
+    await addToPlaylist(playlistId, {
+      episode_name: selectedRec.episode_name,
+      show_name: selectedRec.show_name,
+      episode_description: selectedRec.episode_description,
+      external_url: selectedRec.external_url,
+      image_url: selectedRec.image_url,
+      reason: selectedRec.reason,
+      recommendation_id: selectedRec.id,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-hero">
       {/* Header */}
@@ -69,122 +97,152 @@ export function Dashboard({ onSignOut }: DashboardProps) {
               Pod<span className="text-gradient-gold">Sense</span>
             </span>
           </div>
-          <Button variant="ghost" size="sm" onClick={onSignOut} className="text-muted-foreground">
-            <LogOut className="w-4 h-4 mr-2" /> Sign Out
-          </Button>
+          <div className="flex items-center gap-2">
+            {/* Tab switcher */}
+            <div className="flex bg-secondary rounded-lg p-0.5">
+              <button
+                onClick={() => setTab("discover")}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  tab === "discover" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 inline mr-1.5" />
+                Discover
+              </button>
+              <button
+                onClick={() => setTab("queues")}
+                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  tab === "queues" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
+                }`}
+              >
+                <ListMusic className="w-3.5 h-3.5 inline mr-1.5" />
+                Queues
+              </button>
+            </div>
+            <Button variant="ghost" size="sm" onClick={onSignOut} className="text-muted-foreground">
+              <LogOut className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-        {/* Spotify Connection */}
-        {step === "connect" && !isConnected && (
-          <SpotifyConnect
-            isConnected={isConnected}
-            isConnecting={isConnecting}
-            onConnect={connectSpotify}
-            onFetchData={handleFetchAndAnalyze}
-            isLoadingData={isLoadingData}
+        {tab === "discover" && (
+          <>
+            {/* Spotify Connection */}
+            {step === "connect" && !isConnected && (
+              <SpotifyConnect
+                isConnected={isConnected}
+                isConnecting={isConnecting}
+                onConnect={connectSpotify}
+                onFetchData={handleFetchAndAnalyze}
+                isLoadingData={isLoadingData}
+              />
+            )}
+
+            {isConnected && (
+              <SpotifyConnect
+                isConnected={isConnected}
+                isConnecting={isConnecting}
+                onConnect={connectSpotify}
+                onFetchData={handleFetchAndAnalyze}
+                isLoadingData={isLoadingData || isAnalyzing}
+              />
+            )}
+
+            {isAnalyzing && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8">
+                <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" />
+                <p className="text-foreground font-display font-semibold">Analyzing your podcast taste...</p>
+                <p className="text-muted-foreground text-sm mt-1">
+                  Weighing episode completions and learning your patterns
+                </p>
+              </motion.div>
+            )}
+
+            {tasteProfile && <TasteProfileView profile={tasteProfile} />}
+
+            {tasteProfile && (
+              <div className="flex justify-center">
+                <Button
+                  onClick={generateRecommendations}
+                  disabled={isGenerating}
+                  size="lg"
+                  className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-8 shadow-glow"
+                >
+                  {isGenerating ? (
+                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Curating episodes...</>
+                  ) : (
+                    <><Sparkles className="w-4 h-4 mr-2" /> Get Fresh Recommendations</>
+                  )}
+                </Button>
+              </div>
+            )}
+
+            {isGenerating && (
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-4">
+                <p className="text-muted-foreground text-sm">Finding episodes you'll love...</p>
+              </motion.div>
+            )}
+
+            {recommendations.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-display text-xl font-bold text-foreground">
+                    Your Recommendations
+                  </h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={generateRecommendations}
+                    disabled={isGenerating}
+                    className="text-muted-foreground"
+                  >
+                    <RefreshCw className={`w-4 h-4 mr-1 ${isGenerating ? "animate-spin" : ""}`} /> Refresh
+                  </Button>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {recommendations.map((rec, i) => (
+                    <RecommendationCard
+                      key={rec.id}
+                      rec={rec}
+                      onFeedback={submitFeedback}
+                      onSaveToPlaylist={handleSaveToPlaylist}
+                      index={i}
+                    />
+                  ))}
+                </div>
+                <p className="text-center text-muted-foreground text-xs mt-6">
+                  👆 Rate episodes & save to queues — the algorithm learns from every interaction!
+                </p>
+              </div>
+            )}
+
+            {!isConnected && recommendations.length === 0 && !isAnalyzing && !isGenerating && (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">
+                  Connect your Spotify to get started with personalized podcast recommendations.
+                </p>
+              </div>
+            )}
+          </>
+        )}
+
+        {tab === "queues" && (
+          <PlaylistView
+            playlists={playlists}
+            onRemove={removeFromPlaylist}
+            onMarkListened={markListened}
           />
-        )}
-
-        {/* Connected - Show sync button */}
-        {isConnected && (
-          <SpotifyConnect
-            isConnected={isConnected}
-            isConnecting={isConnecting}
-            onConnect={connectSpotify}
-            onFetchData={handleFetchAndAnalyze}
-            isLoadingData={isLoadingData || isAnalyzing}
-          />
-        )}
-
-        {/* Analyzing state */}
-        {isAnalyzing && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-8"
-          >
-            <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" />
-            <p className="text-foreground font-display font-semibold">Analyzing your podcast taste...</p>
-            <p className="text-muted-foreground text-sm mt-1">Our AI is learning what you love</p>
-          </motion.div>
-        )}
-
-        {/* Taste Profile */}
-        {tasteProfile && <TasteProfileView profile={tasteProfile} />}
-
-        {/* Generate Recommendations */}
-        {tasteProfile && (
-          <div className="flex justify-center">
-            <Button
-              onClick={generateRecommendations}
-              disabled={isGenerating}
-              size="lg"
-              className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-8 shadow-glow"
-            >
-              {isGenerating ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Curating episodes...</>
-              ) : (
-                <><Sparkles className="w-4 h-4 mr-2" /> Get Fresh Recommendations</>
-              )}
-            </Button>
-          </div>
-        )}
-
-        {/* Generating state */}
-        {isGenerating && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-4"
-          >
-            <p className="text-muted-foreground text-sm">Finding episodes you'll love...</p>
-          </motion.div>
-        )}
-
-        {/* Recommendations */}
-        {recommendations.length > 0 && (
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-display text-xl font-bold text-foreground">
-                Your Recommendations
-              </h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={generateRecommendations}
-                disabled={isGenerating}
-                className="text-muted-foreground"
-              >
-                <RefreshCw className={`w-4 h-4 mr-1 ${isGenerating ? "animate-spin" : ""}`} /> Refresh
-              </Button>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              {recommendations.map((rec, i) => (
-                <RecommendationCard
-                  key={rec.id}
-                  rec={rec}
-                  onFeedback={submitFeedback}
-                  index={i}
-                />
-              ))}
-            </div>
-            <p className="text-center text-muted-foreground text-xs mt-6">
-              👆 Your feedback helps the algorithm learn — keep rating to get better picks!
-            </p>
-          </div>
-        )}
-
-        {/* Empty state */}
-        {!isConnected && recommendations.length === 0 && !isAnalyzing && !isGenerating && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">
-              Connect your Spotify to get started with personalized podcast recommendations.
-            </p>
-          </div>
         )}
       </main>
+
+      <SaveToPlaylistDialog
+        open={saveDialogOpen}
+        onClose={() => setSaveDialogOpen(false)}
+        playlists={playlists}
+        onSelect={handlePlaylistSelect}
+      />
     </div>
   );
 }

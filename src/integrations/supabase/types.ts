@@ -14,6 +14,138 @@ export type Database = {
   }
   public: {
     Tables: {
+      episode_completions: {
+        Row: {
+          completion_pct: number
+          created_at: string
+          duration_ms: number | null
+          episode_id: string | null
+          episode_name: string
+          id: string
+          last_played_at: string
+          progress_ms: number | null
+          show_name: string
+          started_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completion_pct?: number
+          created_at?: string
+          duration_ms?: number | null
+          episode_id?: string | null
+          episode_name: string
+          id?: string
+          last_played_at?: string
+          progress_ms?: number | null
+          show_name: string
+          started_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completion_pct?: number
+          created_at?: string
+          duration_ms?: number | null
+          episode_id?: string | null
+          episode_name?: string
+          id?: string
+          last_played_at?: string
+          progress_ms?: number | null
+          show_name?: string
+          started_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      playlist_items: {
+        Row: {
+          created_at: string
+          episode_description: string | null
+          episode_name: string
+          external_url: string | null
+          id: string
+          image_url: string | null
+          listened: boolean
+          playlist_id: string
+          position: number
+          reason: string | null
+          show_name: string
+          source_recommendation_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          episode_description?: string | null
+          episode_name: string
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          listened?: boolean
+          playlist_id: string
+          position?: number
+          reason?: string | null
+          show_name: string
+          source_recommendation_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          episode_description?: string | null
+          episode_name?: string
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          listened?: boolean
+          playlist_id?: string
+          position?: number
+          reason?: string | null
+          show_name?: string
+          source_recommendation_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "playlist_items_playlist_id_fkey"
+            columns: ["playlist_id"]
+            isOneToOne: false
+            referencedRelation: "playlist_queues"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "playlist_items_source_recommendation_id_fkey"
+            columns: ["source_recommendation_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      playlist_queues: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       recommendation_feedback: {
         Row: {
           created_at: string

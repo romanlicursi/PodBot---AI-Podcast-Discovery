@@ -82,18 +82,45 @@ serve(async (req) => {
     const recentData = recentlyPlayed.ok ? await recentlyPlayed.json() : { items: [] };
     const showsData = savedShows.ok ? await savedShows.json() : { items: [] };
 
-    // Filter for podcast episodes only
+    // Filter for podcast episodes and extract completion data
     const podcastHistory = (recentData.items || [])
       .filter((item: any) => item.track?.type === "episode")
-      .map((item: any) => ({
-        episode_name: item.track.name,
-        show_name: item.track.show?.name || "Unknown Show",
-        show_id: item.track.show?.id,
-        description: item.track.description?.substring(0, 300),
-        played_at: item.played_at,
-        duration_ms: item.track.duration_ms,
-        image_url: item.track.images?.[0]?.url || item.track.show?.images?.[0]?.url,
-      }));
+      .map((item: any) => {
+        const durationMs = item.track.duration_ms || 0;
+        const resumePointMs = item.track.resume_point?.resume_position_ms || 0;
+        const fullyPlayed = item.track.resume_point?.fully_played || false;
+        const completionPct = fullyPlayed ? 1.0 : (durationMs > 0 ? resumePointMs / durationMs : 0);
+
+        return {
+          episode_name: item.track.name,
+          show_name: item.track.show?.name || "Unknown Show",
+          show_id: item.track.show?.id,
+          episode_id: item.track.id,
+          description: item.track.description?.substring(0, 300),
+          played_at: item.played_at,
+          duration_ms: durationMs,
+          resume_position_ms: resumePointMs,
+          fully_played: fullyPlayed,
+          completion_pct: Math.round(completionPct * 100) / 100,
+          image_url: item.track.images?.[0]?.url || item.track.show?.images?.[0]?.url,
+        };
+      });
+
+    // Save completion data to episode_completions table
+    for (const ep of podcastHistory) {
+      await supabase
+        .from("episode_completions")
+        .upsert({
+          user_id: user.id,
+          episode_name: ep.episode_name,
+          show_name: ep.show_name,
+          episode_id: ep.episode_id,
+          duration_ms: ep.duration_ms,
+          progress_ms: ep.resume_position_ms,
+          completion_pct: ep.completion_pct,
+          last_played_at: ep.played_at,
+        }, { onConflict: "user_id,episode_name,show_name" });
+    }
 
     const followedShows = (showsData.items || []).map((item: any) => ({
       name: item.show.name,
