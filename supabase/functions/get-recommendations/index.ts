@@ -102,7 +102,7 @@ serve(async (req) => {
       .order("created_at", { ascending: false })
       .limit(30);
 
-    const systemPrompt = `You are a podcast recommendation engine. Based on the user's taste profile, completion data, feedback, and playlist organization, recommend specific podcast episodes they would love.
+    const systemPrompt = `You are a podcast recommendation engine. Based on the user's taste profile, completion data, feedback, playlist saves, and playlist organization, recommend specific podcast episodes they would love.
 
 CRITICAL RULES:
 - Recommend REAL podcasts and episodes that actually exist
@@ -111,6 +111,7 @@ CRITICAL RULES:
 - HEAVILY WEIGHT completion data: recommend content similar to episodes they FINISH (90%+)
 - AVOID content similar to episodes they ABANDON (<15% completion)
 - Shows they've liked AND finish get the highest recommendation weight
+- PLAYLIST SAVES are the STRONGEST positive signal — when a user saves an episode to a Spotify playlist, it means they're deeply interested in that content. Recommend more like the shows/topics they save.
 - Consider their playlist categories (${(playlistData || []).map((p: any) => p.name).join(", ")}) — recommend episodes that would fit these queues
 - Each recommendation must include a specific, compelling reason
 - Score each 0-1 based on profile match AND predicted completion likelihood`;
@@ -130,7 +131,11 @@ ${JSON.stringify(abandonedShows)}
 Shows they've liked via feedback: ${JSON.stringify(likedShows)}
 Shows they've disliked via feedback: ${JSON.stringify(dislikedShows)}
 
-Their playlist queues contain: ${JSON.stringify((playlistItems || []).map((i: any) => `${i.episode_name} (${i.show_name})`).slice(0, 15))}
+Episodes they SAVED to Spotify playlists (strongest intent signal):
+${JSON.stringify(playlistSaveSummary.slice(0, 20))}
+Shows frequently saved to playlists: ${JSON.stringify([...new Set(savedToPlaylistShows)])}
+
+Their in-app queues contain: ${JSON.stringify((playlistItems || []).map((i: any) => `${i.episode_name} (${i.show_name})`).slice(0, 15))}
 
 Analysis count: ${tasteProfile.analysis_count} (${tasteProfile.analysis_count > 3 ? "well-calibrated profile, be bold with new discoveries" : "still learning, balance familiar and new"})
 
