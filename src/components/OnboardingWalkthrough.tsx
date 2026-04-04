@@ -45,7 +45,7 @@ function DNAVisual() {
         <motion.div
           key={i}
           className="absolute w-3 h-3 rounded-full bg-primary"
-          style={{ boxShadow: "0 0 12px hsl(185 72% 48% / 0.5)" }}
+          style={{ boxShadow: "0 0 12px hsl(17 88% 56% / 0.5)" }}
           initial={{ opacity: 0 }}
           animate={{
             opacity: [0.3, 1, 0.3],
