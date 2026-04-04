@@ -1,4 +1,6 @@
-import { Brain, BookOpen, Laugh } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Music, Loader2, CheckCircle2, Search } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -6,50 +8,173 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import type { Playlist } from "@/hooks/usePlaylists";
+import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-const CATEGORY_ICONS: Record<string, any> = {
-  philosophy: Brain,
-  literature: BookOpen,
-  comedy: Laugh,
-};
+interface SpotifyPlaylist {
+  id: string;
+  name: string;
+  description: string;
+  image_url: string | null;
+  track_count: number;
+  owner: string;
+}
 
 interface SaveToPlaylistDialogProps {
   open: boolean;
   onClose: () => void;
-  playlists: Playlist[];
-  onSelect: (playlistId: string) => void;
+  episode: {
+    id: string;
+    episode_name: string;
+    show_name: string;
+    episode_id?: string | null;
+  } | null;
 }
 
-export function SaveToPlaylistDialog({ open, onClose, playlists, onSelect }: SaveToPlaylistDialogProps) {
+export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistDialogProps) {
+  const [playlists, setPlaylists] = useState<SpotifyPlaylist[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState<string | null>(null);
+  const [saved, setSaved] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (open) {
+      fetchPlaylists();
+      setSaved(null);
+      setSearch("");
+    }
+  }, [open]);
+
+  const fetchPlaylists = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("spotify-playlists", {
+        body: { action: "get_playlists" },
+      });
+      if (error) throw error;
+      setPlaylists(data.playlists || []);
+    } catch (err: any) {
+      toast({ title: "Failed to load playlists", description: err.message, variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAddToPlaylist = async (playlist: SpotifyPlaylist) => {
+    if (!episode) return;
+    setSaving(playlist.id);
+
+    try {
+      // Build episode URI — Spotify episode URIs are spotify:episode:{id}
+      const episodeUri = episode.episode_id
+        ? `spotify:episode:${episode.episode_id}`
+        : null;
+
+      if (!episodeUri) {
+        toast({ title: "Can't add", description: "This episode doesn't have a Spotify ID to add.", variant: "destructive" });
+        setSaving(null);
+        return;
+      }
+
+      const { error } = await supabase.functions.invoke("spotify-playlists", {
+        body: {
+          action: "add_to_playlist",
+          playlist_id: playlist.id,
+          episode_uri: episodeUri,
+        },
+      });
+      if (error) throw error;
+
+      // Track the save for the algorithm
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        await supabase.from("playlist_saves").insert({
+          user_id: session.user.id,
+          recommendation_id: episode.id,
+          spotify_playlist_id: playlist.id,
+          spotify_playlist_name: playlist.name,
+          episode_name: episode.episode_name,
+          show_name: episode.show_name,
+        });
+      }
+
+      setSaved(playlist.id);
+      toast({ title: `Added to "${playlist.name}"` });
+
+      // Close after a brief moment
+      setTimeout(() => onClose(), 800);
+    } catch (err: any) {
+      toast({ title: "Failed to add", description: err.message, variant: "destructive" });
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const filtered = playlists.filter((p) =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-card border-border max-w-sm">
+      <DialogContent className="bg-card border-border max-w-sm max-h-[80vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle className="font-display text-foreground">Save to Queue</DialogTitle>
+          <DialogTitle className="font-display text-foreground">Add to Spotify Playlist</DialogTitle>
         </DialogHeader>
-        <div className="space-y-2 pt-2">
-          {playlists.map((p) => {
-            const Icon = CATEGORY_ICONS[p.category] || BookOpen;
-            const count = (p.items || []).filter((i) => !i.listened).length;
-            return (
-              <Button
+
+        {episode && (
+          <p className="text-xs text-muted-foreground truncate -mt-1">
+            {episode.episode_name} — {episode.show_name}
+          </p>
+        )}
+
+        {/* Search */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+          <Input
+            placeholder="Search playlists..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9 h-9 bg-secondary border-border text-sm"
+          />
+        </div>
+
+        {/* Playlist list */}
+        <div className="flex-1 overflow-y-auto space-y-1.5 min-h-0 pr-1">
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="w-5 h-5 animate-spin text-primary" />
+            </div>
+          ) : filtered.length === 0 ? (
+            <p className="text-muted-foreground text-sm text-center py-6">
+              {search ? "No playlists match your search" : "No playlists found"}
+            </p>
+          ) : (
+            filtered.map((p) => (
+              <button
                 key={p.id}
-                variant="outline"
-                className="w-full justify-start gap-3 h-12 border-border hover:bg-secondary"
-                onClick={() => {
-                  onSelect(p.id);
-                  onClose();
-                }}
+                onClick={() => handleAddToPlaylist(p)}
+                disabled={saving !== null}
+                className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-secondary transition-colors text-left disabled:opacity-50"
               >
-                <Icon className="w-5 h-5 text-primary" />
-                <span className="font-medium text-foreground">{p.name}</span>
-                {count > 0 && (
-                  <span className="ml-auto text-xs text-muted-foreground">{count} queued</span>
-                )}
-              </Button>
-            );
-          })}
+                <div className="w-10 h-10 rounded-lg bg-secondary flex-shrink-0 overflow-hidden flex items-center justify-center">
+                  {p.image_url ? (
+                    <img src={p.image_url} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <Music className="w-4 h-4 text-muted-foreground" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{p.name}</p>
+                  <p className="text-xs text-muted-foreground">{p.track_count} tracks</p>
+                </div>
+                {saving === p.id && <Loader2 className="w-4 h-4 animate-spin text-primary flex-shrink-0" />}
+                {saved === p.id && <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" />}
+              </button>
+            ))
+          )}
         </div>
       </DialogContent>
     </Dialog>

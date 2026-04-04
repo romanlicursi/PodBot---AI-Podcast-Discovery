@@ -26,6 +26,10 @@ serve(async (req) => {
         "user-read-playback-position",
         "user-library-read",
         "user-follow-read",
+        "playlist-read-private",
+        "playlist-read-collaborative",
+        "playlist-modify-public",
+        "playlist-modify-private",
       ].join(" ");
 
       const authUrl = `https://accounts.spotify.com/authorize?` +

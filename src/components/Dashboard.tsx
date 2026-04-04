@@ -71,19 +71,6 @@ export function Dashboard({ onSignOut }: DashboardProps) {
     setSaveDialogOpen(true);
   };
 
-  const handlePlaylistSelect = async (playlistId: string) => {
-    if (!selectedRec) return;
-    await addToPlaylist(playlistId, {
-      episode_name: selectedRec.episode_name,
-      show_name: selectedRec.show_name,
-      episode_description: selectedRec.episode_description,
-      external_url: selectedRec.external_url,
-      image_url: selectedRec.image_url,
-      reason: selectedRec.reason,
-      recommendation_id: selectedRec.id,
-    });
-  };
-
   return (
     <div className="min-h-screen bg-gradient-hero">
       {/* Header */}
@@ -98,7 +85,6 @@ export function Dashboard({ onSignOut }: DashboardProps) {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            {/* Tab switcher */}
             <div className="flex bg-secondary rounded-lg p-0.5">
               <button
                 onClick={() => setTab("discover")}
@@ -129,7 +115,6 @@ export function Dashboard({ onSignOut }: DashboardProps) {
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
         {tab === "discover" && (
           <>
-            {/* Spotify Connection */}
             {step === "connect" && !isConnected && (
               <SpotifyConnect
                 isConnected={isConnected}
@@ -188,9 +173,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
             {recommendations.length > 0 && (
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-display text-xl font-bold text-foreground">
-                    Your Recommendations
-                  </h2>
+                  <h2 className="font-display text-xl font-bold text-foreground">Your Recommendations</h2>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -213,7 +196,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
                   ))}
                 </div>
                 <p className="text-center text-muted-foreground text-xs mt-6">
-                  👆 Rate episodes & save to queues — the algorithm learns from every interaction!
+                  👆 Rate episodes & save to Spotify playlists — the algorithm learns from every interaction!
                 </p>
               </div>
             )}
@@ -240,8 +223,12 @@ export function Dashboard({ onSignOut }: DashboardProps) {
       <SaveToPlaylistDialog
         open={saveDialogOpen}
         onClose={() => setSaveDialogOpen(false)}
-        playlists={playlists}
-        onSelect={handlePlaylistSelect}
+        episode={selectedRec ? {
+          id: selectedRec.id,
+          episode_name: selectedRec.episode_name,
+          show_name: selectedRec.show_name,
+          episode_id: selectedRec.episode_id,
+        } : null}
       />
     </div>
   );
