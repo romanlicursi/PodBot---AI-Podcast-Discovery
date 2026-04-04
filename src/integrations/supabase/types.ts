@@ -14,7 +14,149 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      recommendation_feedback: {
+        Row: {
+          created_at: string
+          feedback: string
+          id: string
+          recommendation_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          feedback: string
+          id?: string
+          recommendation_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          feedback?: string
+          id?: string
+          recommendation_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recommendation_feedback_recommendation_id_fkey"
+            columns: ["recommendation_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recommendations: {
+        Row: {
+          created_at: string
+          episode_description: string | null
+          episode_id: string | null
+          episode_name: string
+          external_url: string | null
+          id: string
+          image_url: string | null
+          is_new_show: boolean | null
+          reason: string | null
+          score: number | null
+          show_id: string | null
+          show_name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          episode_description?: string | null
+          episode_id?: string | null
+          episode_name: string
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_new_show?: boolean | null
+          reason?: string | null
+          score?: number | null
+          show_id?: string | null
+          show_name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          episode_description?: string | null
+          episode_id?: string | null
+          episode_name?: string
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_new_show?: boolean | null
+          reason?: string | null
+          score?: number | null
+          show_id?: string | null
+          show_name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      spotify_tokens: {
+        Row: {
+          access_token: string
+          created_at: string
+          expires_at: string
+          id: string
+          refresh_token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          expires_at: string
+          id?: string
+          refresh_token: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          refresh_token?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      taste_profiles: {
+        Row: {
+          analysis_count: number
+          created_at: string
+          id: string
+          last_analyzed_at: string | null
+          listening_history_snapshot: Json | null
+          profile_data: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analysis_count?: number
+          created_at?: string
+          id?: string
+          last_analyzed_at?: string | null
+          listening_history_snapshot?: Json | null
+          profile_data?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analysis_count?: number
+          created_at?: string
+          id?: string
+          last_analyzed_at?: string | null
+          listening_history_snapshot?: Json | null
+          profile_data?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
