@@ -121,6 +121,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
                 isConnected={isConnected}
                 isConnecting={isConnecting}
                 onConnect={connectSpotify}
+                onDisconnect={disconnectSpotify}
                 onFetchData={handleFetchAndAnalyze}
                 isLoadingData={isLoadingData}
               />
