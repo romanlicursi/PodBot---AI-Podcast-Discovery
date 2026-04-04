@@ -20,8 +20,13 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccess("");
     const { error } = await onAuth(email, password, isSignUp);
-    if (error) setError(error.message);
+    if (error) {
+      setError(error.message);
+    } else if (isSignUp) {
+      setSuccess("Account created! You can now sign in.");
+    }
     setLoading(false);
   };
 
