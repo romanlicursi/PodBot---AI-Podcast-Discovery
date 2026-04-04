@@ -45,7 +45,7 @@ function DNAVisual() {
         <motion.div
           key={i}
           className="absolute w-3 h-3 rounded-full bg-primary"
-          style={{ boxShadow: "0 0 12px hsl(185 72% 48% / 0.5)" }}
+          style={{ boxShadow: "0 0 12px hsl(17 88% 56% / 0.5)" }}
           initial={{ opacity: 0 }}
           animate={{
             opacity: [0.3, 1, 0.3],
@@ -68,7 +68,7 @@ function DNAVisual() {
           style={{
             width: "120px",
             rotate: `${i * 30}deg`,
-            background: "linear-gradient(90deg, transparent, hsl(185 72% 48% / 0.3), transparent)",
+            background: "linear-gradient(90deg, transparent, hsl(17 88% 56% / 0.3), transparent)",
           }}
           initial={{ opacity: 0, scaleX: 0 }}
           animate={{ opacity: [0, 0.6, 0], scaleX: [0, 1, 0] }}
@@ -161,13 +161,13 @@ function ReadyVisual() {
     <div className="relative w-full h-52 flex items-center justify-center">
       <motion.div
         className="absolute w-44 h-44 rounded-full"
-        style={{ background: "radial-gradient(circle, hsl(185 72% 48% / 0.15), transparent)" }}
+        style={{ background: "radial-gradient(circle, hsl(17 88% 56% / 0.15), transparent)" }}
         animate={{ scale: [1, 1.4, 1], opacity: [0.5, 0.2, 0.5] }}
         transition={{ duration: 3, repeat: Infinity }}
       />
       <motion.div
         className="absolute w-28 h-28 rounded-full"
-        style={{ background: "radial-gradient(circle, hsl(185 72% 48% / 0.08), transparent)" }}
+        style={{ background: "radial-gradient(circle, hsl(17 88% 56% / 0.08), transparent)" }}
         animate={{ scale: [1.2, 0.9, 1.2], opacity: [0.3, 0.5, 0.3] }}
         transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
       />

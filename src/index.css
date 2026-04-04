@@ -15,7 +15,7 @@
     --popover: 230 15% 9%;
     --popover-foreground: 40 15% 92%;
 
-    --primary: 185 72% 48%;
+    --primary: 17 88% 56%;
     --primary-foreground: 230 20% 5%;
 
     --secondary: 230 12% 13%;
@@ -24,33 +24,33 @@
     --muted: 230 10% 15%;
     --muted-foreground: 230 8% 45%;
 
-    --accent: 185 72% 48%;
+    --accent: 17 88% 56%;
     --accent-foreground: 230 20% 5%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 40 15% 92%;
 
-    --border: 230 12% 16%;
+    --border: 17 20% 16%;
     --input: 230 12% 14%;
-    --ring: 185 72% 48%;
+    --ring: 17 88% 56%;
 
     --radius: 0.875rem;
 
     --sidebar-background: 230 18% 7%;
     --sidebar-foreground: 40 15% 92%;
-    --sidebar-primary: 185 72% 48%;
+    --sidebar-primary: 17 88% 56%;
     --sidebar-primary-foreground: 230 20% 5%;
     --sidebar-accent: 230 12% 13%;
     --sidebar-accent-foreground: 40 15% 92%;
     --sidebar-border: 230 12% 16%;
-    --sidebar-ring: 185 72% 48%;
+    --sidebar-ring: 17 88% 56%;
 
-    --gradient-gold: linear-gradient(135deg, hsl(185, 72%, 48%), hsl(195, 80%, 55%));
+    --gradient-gold: linear-gradient(135deg, hsl(17, 88%, 56%), hsl(25, 95%, 53%));
     --gradient-card: linear-gradient(145deg, hsl(230, 15%, 11%) 0%, hsl(230, 18%, 7%) 100%);
     --gradient-hero: linear-gradient(180deg, hsl(230, 20%, 7%) 0%, hsl(230, 22%, 3%) 100%);
-    --gradient-glass: linear-gradient(135deg, hsl(185 72% 48% / 0.06), hsl(185 72% 48% / 0.02));
-    --shadow-glow: 0 0 50px -15px hsl(185 72% 48% / 0.3);
-    --shadow-card: 0 8px 40px -12px hsl(185 72% 48% / 0.08), 0 2px 8px -2px hsl(0 0% 0% / 0.4);
+    --gradient-glass: linear-gradient(135deg, hsl(17 88% 56% / 0.06), hsl(17 88% 56% / 0.02));
+    --shadow-glow: 0 0 50px -15px hsl(17 88% 56% / 0.35);
+    --shadow-card: 0 8px 40px -12px hsl(17 88% 56% / 0.1), 0 2px 8px -2px hsl(0 0% 0% / 0.4);
   }
 }
 
@@ -96,16 +96,16 @@
     background: hsl(230 15% 9% / 0.6);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid hsl(185 72% 48% / 0.1);
-    border-top-color: hsl(185 72% 48% / 0.18);
+    border: 1px solid hsl(17 88% 56% / 0.1);
+    border-top-color: hsl(17 88% 56% / 0.18);
   }
 
   .glass-strong {
     background: hsl(230 15% 9% / 0.75);
     backdrop-filter: blur(32px);
     -webkit-backdrop-filter: blur(32px);
-    border: 1px solid hsl(185 72% 48% / 0.12);
-    border-top-color: hsl(185 72% 48% / 0.22);
+    border: 1px solid hsl(17 88% 56% / 0.12);
+    border-top-color: hsl(17 88% 56% / 0.22);
   }
 
   .noise {
