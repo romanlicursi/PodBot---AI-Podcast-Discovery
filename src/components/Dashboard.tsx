@@ -25,6 +25,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
     isLoadingData,
     checkConnection,
     connectSpotify,
+    disconnectSpotify,
     fetchListeningData,
   } = useSpotify();
 
