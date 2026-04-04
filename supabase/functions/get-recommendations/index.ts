@@ -206,8 +206,76 @@ Please recommend 8-12 specific podcast episodes.`;
     const toolCall = aiData.choices?.[0]?.message?.tool_calls?.[0];
     const recs = toolCall ? JSON.parse(toolCall.function.arguments).recommendations : [];
 
+    // Look up episode artwork from Spotify
+    // Get user's Spotify access token
+    const { data: tokenData } = await supabase
+      .from("spotify_tokens")
+      .select("access_token, expires_at, refresh_token")
+      .eq("user_id", user.id)
+      .single();
+
+    let spotifyToken = tokenData?.access_token || null;
+
+    // Refresh if expired
+    if (tokenData && new Date(tokenData.expires_at) <= new Date()) {
+      const SPOTIFY_CLIENT_ID = Deno.env.get("SPOTIFY_CLIENT_ID");
+      const SPOTIFY_CLIENT_SECRET = Deno.env.get("SPOTIFY_CLIENT_SECRET");
+      if (SPOTIFY_CLIENT_ID && SPOTIFY_CLIENT_SECRET) {
+        const refreshRes = await fetch("https://accounts.spotify.com/api/token", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Basic ${btoa(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`)}`,
+          },
+          body: new URLSearchParams({
+            grant_type: "refresh_token",
+            refresh_token: tokenData.refresh_token,
+          }),
+        });
+        if (refreshRes.ok) {
+          const newTokens = await refreshRes.json();
+          spotifyToken = newTokens.access_token;
+          await supabase.from("spotify_tokens").update({
+            access_token: newTokens.access_token,
+            expires_at: new Date(Date.now() + newTokens.expires_in * 1000).toISOString(),
+            ...(newTokens.refresh_token && { refresh_token: newTokens.refresh_token }),
+          }).eq("user_id", user.id);
+        }
+      }
+    }
+
+    // Fetch episode images from Spotify Search API
+    async function searchEpisodeImage(episodeName: string, showName: string): Promise<{ image_url: string | null; external_url: string | null; episode_id: string | null }> {
+      if (!spotifyToken) return { image_url: null, external_url: null, episode_id: null };
+      try {
+        const query = encodeURIComponent(`${episodeName} ${showName}`);
+        const res = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=episode&limit=1`, {
+          headers: { Authorization: `Bearer ${spotifyToken}` },
+        });
+        if (!res.ok) return { image_url: null, external_url: null, episode_id: null };
+        const data = await res.json();
+        const ep = data?.episodes?.items?.[0];
+        if (!ep) return { image_url: null, external_url: null, episode_id: null };
+        return {
+          image_url: ep.images?.[0]?.url || null,
+          external_url: ep.external_urls?.spotify || null,
+          episode_id: ep.id || null,
+        };
+      } catch {
+        return { image_url: null, external_url: null, episode_id: null };
+      }
+    }
+
+    // Enrich recommendations with Spotify data (parallel lookups)
+    const enriched = await Promise.all(
+      recs.map(async (r: any) => {
+        const spotify = await searchEpisodeImage(r.episode_name, r.show_name);
+        return { ...r, ...spotify };
+      })
+    );
+
     // Save recommendations to DB
-    const toInsert = recs.map((r: any) => ({
+    const toInsert = enriched.map((r: any) => ({
       user_id: user.id,
       episode_name: r.episode_name,
       episode_description: r.episode_description || null,
@@ -215,6 +283,9 @@ Please recommend 8-12 specific podcast episodes.`;
       reason: r.reason,
       is_new_show: r.is_new_show,
       score: r.score,
+      image_url: r.image_url || null,
+      external_url: r.external_url || null,
+      episode_id: r.episode_id || null,
     }));
 
     if (toInsert.length > 0) {
