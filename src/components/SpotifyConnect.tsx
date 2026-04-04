@@ -15,6 +15,7 @@ export function SpotifyConnect({
   isConnected,
   isConnecting,
   onConnect,
+  onDisconnect,
   onFetchData,
   isLoadingData,
 }: SpotifyConnectProps) {
