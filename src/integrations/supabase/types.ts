@@ -146,6 +146,47 @@ export type Database = {
         }
         Relationships: []
       }
+      playlist_saves: {
+        Row: {
+          created_at: string
+          episode_name: string
+          id: string
+          recommendation_id: string | null
+          show_name: string
+          spotify_playlist_id: string
+          spotify_playlist_name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          episode_name: string
+          id?: string
+          recommendation_id?: string | null
+          show_name: string
+          spotify_playlist_id: string
+          spotify_playlist_name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          episode_name?: string
+          id?: string
+          recommendation_id?: string | null
+          show_name?: string
+          spotify_playlist_id?: string
+          spotify_playlist_name?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "playlist_saves_recommendation_id_fkey"
+            columns: ["recommendation_id"]
+            isOneToOne: false
+            referencedRelation: "recommendations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recommendation_feedback: {
         Row: {
           created_at: string
