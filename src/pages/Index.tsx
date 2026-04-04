@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { AuthScreen } from "@/components/AuthScreen";
 import { Dashboard } from "@/components/Dashboard";
+import { OnboardingWalkthrough } from "@/components/OnboardingWalkthrough";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const { session, loading, signUp, signIn, signOut } = useAuth();
+  const [showOnboarding, setShowOnboarding] = useState(true);
 
   if (loading) {
     return (
@@ -15,6 +18,9 @@ const Index = () => {
   }
 
   if (!session) {
+    if (showOnboarding) {
+      return <OnboardingWalkthrough onComplete={() => setShowOnboarding(false)} />;
+    }
     return (
       <AuthScreen
         onAuth={async (email, password, isSignUp) => {
