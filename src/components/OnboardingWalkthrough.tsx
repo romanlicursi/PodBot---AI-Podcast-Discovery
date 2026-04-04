@@ -161,7 +161,7 @@ function ReadyVisual() {
     <div className="relative w-full h-52 flex items-center justify-center">
       <motion.div
         className="absolute w-44 h-44 rounded-full"
-        style={{ background: "radial-gradient(circle, hsl(185 72% 48% / 0.15), transparent)" }}
+        style={{ background: "radial-gradient(circle, hsl(17 88% 56% / 0.15), transparent)" }}
         animate={{ scale: [1, 1.4, 1], opacity: [0.5, 0.2, 0.5] }}
         transition={{ duration: 3, repeat: Infinity }}
       />
