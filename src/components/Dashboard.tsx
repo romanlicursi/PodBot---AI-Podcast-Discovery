@@ -1,21 +1,18 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Headphones, LogOut, RefreshCw, Loader2, Sparkles, ListMusic } from "lucide-react";
+import { Headphones, LogOut, RefreshCw, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SpotifyConnect } from "@/components/SpotifyConnect";
 import { RecommendationCard } from "@/components/RecommendationCard";
 import { TasteProfileView } from "@/components/TasteProfileView";
-import { PlaylistView } from "@/components/PlaylistView";
 import { SaveToPlaylistDialog } from "@/components/SaveToPlaylistDialog";
 import { useSpotify } from "@/hooks/useSpotify";
 import { useRecommendations } from "@/hooks/useRecommendations";
-import { usePlaylists } from "@/hooks/usePlaylists";
 
 interface DashboardProps {
   onSignOut: () => void;
 }
 
-type Tab = "discover" | "queues";
 
 export function Dashboard({ onSignOut }: DashboardProps) {
   const {
@@ -41,10 +38,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
     submitFeedback,
   } = useRecommendations();
 
-  const { playlists, addToPlaylist, removeFromPlaylist, markListened } = usePlaylists();
-
   const [step, setStep] = useState<"connect" | "analyze" | "recommend">("connect");
-  const [tab, setTab] = useState<Tab>("discover");
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
   const [selectedRec, setSelectedRec] = useState<any>(null);
 
@@ -87,26 +81,6 @@ export function Dashboard({ onSignOut }: DashboardProps) {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex bg-secondary rounded-lg p-0.5">
-              <button
-                onClick={() => setTab("discover")}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                  tab === "discover" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
-                }`}
-              >
-                <Sparkles className="w-3.5 h-3.5 inline mr-1.5" />
-                Discover
-              </button>
-              <button
-                onClick={() => setTab("queues")}
-                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                  tab === "queues" ? "bg-card text-foreground shadow-sm" : "text-muted-foreground"
-                }`}
-              >
-                <ListMusic className="w-3.5 h-3.5 inline mr-1.5" />
-                Queues
-              </button>
-            </div>
             <Button variant="ghost" size="sm" onClick={onSignOut} className="text-muted-foreground">
               <LogOut className="w-4 h-4" />
             </Button>
@@ -115,8 +89,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-        {tab === "discover" && (
-          <>
+        <>
             {step === "connect" && !isConnected && (
               <SpotifyConnect
                 isConnected={isConnected}
@@ -212,16 +185,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
                 </p>
               </div>
             )}
-          </>
-        )}
-
-        {tab === "queues" && (
-          <PlaylistView
-            playlists={playlists}
-            onRemove={removeFromPlaylist}
-            onMarkListened={markListened}
-          />
-        )}
+        </>
       </main>
 
       <SaveToPlaylistDialog
