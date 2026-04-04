@@ -68,12 +68,15 @@ export function Dashboard({ onSignOut }: DashboardProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-gradient-hero noise relative">
+      {/* Ambient glow */}
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full bg-primary/4 blur-3xl pointer-events-none" />
+
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-md sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+      <header className="glass-strong sticky top-0 z-20 border-b border-border">
+        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-gold flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-gradient-gold flex items-center justify-center shadow-glow">
               <Headphones className="w-4 h-4 text-primary-foreground" />
             </div>
             <span className="font-display font-bold text-lg text-foreground">
@@ -81,14 +84,14 @@ export function Dashboard({ onSignOut }: DashboardProps) {
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={onSignOut} className="text-muted-foreground">
+            <Button variant="ghost" size="sm" onClick={onSignOut} className="text-muted-foreground hover:text-foreground btn-press">
               <LogOut className="w-4 h-4" />
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-4 py-8 space-y-8">
+      <main className="max-w-5xl mx-auto px-6 py-10 space-y-10 relative z-10">
         <>
             {step === "connect" && !isConnected && (
               <SpotifyConnect
@@ -113,9 +116,18 @@ export function Dashboard({ onSignOut }: DashboardProps) {
             )}
 
             {isAnalyzing && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-8">
-                <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-3" />
-                <p className="text-foreground font-display font-semibold">Analyzing your podcast taste...</p>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
+                <div className="flex items-center justify-center gap-1.5 mb-4">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <motion.div
+                      key={i}
+                      className="w-1 bg-primary rounded-full"
+                      animate={{ height: ["4px", "20px", "4px"] }}
+                      transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.15 }}
+                    />
+                  ))}
+                </div>
+                <p className="text-foreground font-display font-semibold text-lg">Analyzing your podcast taste...</p>
                 <p className="text-muted-foreground text-sm mt-1">
                   Weighing episode completions and learning your patterns
                 </p>
@@ -130,7 +142,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
                   onClick={generateRecommendations}
                   disabled={isGenerating}
                   size="lg"
-                  className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-8 shadow-glow"
+                  className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-8 shadow-glow btn-press"
                 >
                   {isGenerating ? (
                     <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Curating episodes...</>
@@ -142,26 +154,26 @@ export function Dashboard({ onSignOut }: DashboardProps) {
             )}
 
             {isGenerating && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-4">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-6">
                 <p className="text-muted-foreground text-sm">Finding episodes you'll love...</p>
               </motion.div>
             )}
 
             {recommendations.length > 0 && (
               <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-display text-xl font-bold text-foreground">Your Recommendations</h2>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="font-display text-2xl font-bold text-foreground tracking-tight">Your Recommendations</h2>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={generateRecommendations}
                     disabled={isGenerating}
-                    className="text-muted-foreground"
+                    className="text-muted-foreground hover:text-foreground btn-press"
                   >
-                    <RefreshCw className={`w-4 h-4 mr-1 ${isGenerating ? "animate-spin" : ""}`} /> Refresh
+                    <RefreshCw className={`w-4 h-4 mr-1.5 ${isGenerating ? "animate-spin" : ""}`} /> Refresh
                   </Button>
                 </div>
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-5 md:grid-cols-2">
                   {recommendations.map((rec, i) => (
                     <RecommendationCard
                       key={rec.id}
@@ -172,14 +184,14 @@ export function Dashboard({ onSignOut }: DashboardProps) {
                     />
                   ))}
                 </div>
-                <p className="text-center text-muted-foreground text-xs mt-6">
+                <p className="text-center text-muted-foreground text-xs mt-8 tracking-wide">
                   👆 Rate episodes & save to Spotify playlists — the algorithm learns from every interaction!
                 </p>
               </div>
             )}
 
             {!isConnected && recommendations.length === 0 && !isAnalyzing && !isGenerating && (
-              <div className="text-center py-12">
+              <div className="text-center py-16">
                 <p className="text-muted-foreground">
                   Connect your Spotify to get started with personalized podcast recommendations.
                 </p>
