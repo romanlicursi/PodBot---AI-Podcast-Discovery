@@ -62,6 +62,15 @@ export function useSpotify() {
     }
   }, [toast]);
 
+  const disconnectSpotify = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    await supabase.from("spotify_tokens").delete().eq("user_id", session.user.id);
+    setIsConnected(false);
+    setListeningData(null);
+    toast({ title: "Spotify disconnected", description: "Reconnect to grant updated permissions." });
+  }, [toast]);
+
   return {
     isConnected,
     isConnecting,
@@ -69,6 +78,7 @@ export function useSpotify() {
     isLoadingData,
     checkConnection,
     connectSpotify,
+    disconnectSpotify,
     exchangeCode,
     fetchListeningData,
   };

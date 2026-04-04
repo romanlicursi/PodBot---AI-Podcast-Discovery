@@ -25,6 +25,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
     isLoadingData,
     checkConnection,
     connectSpotify,
+    disconnectSpotify,
     fetchListeningData,
   } = useSpotify();
 
@@ -120,6 +121,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
                 isConnected={isConnected}
                 isConnecting={isConnecting}
                 onConnect={connectSpotify}
+                onDisconnect={disconnectSpotify}
                 onFetchData={handleFetchAndAnalyze}
                 isLoadingData={isLoadingData}
               />
@@ -130,6 +132,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
                 isConnected={isConnected}
                 isConnecting={isConnecting}
                 onConnect={connectSpotify}
+                onDisconnect={disconnectSpotify}
                 onFetchData={handleFetchAndAnalyze}
                 isLoadingData={isLoadingData || isAnalyzing}
               />

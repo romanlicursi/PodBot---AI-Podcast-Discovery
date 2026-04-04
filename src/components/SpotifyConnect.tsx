@@ -6,6 +6,7 @@ interface SpotifyConnectProps {
   isConnected: boolean;
   isConnecting: boolean;
   onConnect: () => void;
+  onDisconnect?: () => void;
   onFetchData: () => void;
   isLoadingData: boolean;
 }
@@ -14,6 +15,7 @@ export function SpotifyConnect({
   isConnected,
   isConnecting,
   onConnect,
+  onDisconnect,
   onFetchData,
   isLoadingData,
 }: SpotifyConnectProps) {
@@ -44,6 +46,16 @@ export function SpotifyConnect({
             <><Sparkles className="w-4 h-4 mr-2" /> Sync & Analyze Listening History</>
           )}
         </Button>
+        {onDisconnect && (
+          <Button
+            onClick={onDisconnect}
+            variant="ghost"
+            size="sm"
+            className="w-full mt-2 text-muted-foreground text-xs"
+          >
+            Disconnect & Reconnect Spotify
+          </Button>
+        )}
       </motion.div>
     );
   }
