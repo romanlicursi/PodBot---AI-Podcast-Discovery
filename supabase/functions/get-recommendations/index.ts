@@ -58,7 +58,19 @@ serve(async (req) => {
       ?.filter((f: any) => f.feedback === "disliked")
       .map((f: any) => f.recommendations?.show_name) || [];
 
-    // Identify high-completion shows (episodes they actually finish)
+    // Get playlist saves — strongest intent signal (user actively saved for later)
+    const { data: playlistSaves } = await supabase
+      .from("playlist_saves")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    const savedToPlaylistShows = (playlistSaves || []).map((s: any) => s.show_name);
+    const playlistSaveSummary = (playlistSaves || []).map((s: any) => 
+      `${s.episode_name} (${s.show_name}) → saved to "${s.spotify_playlist_name}"`
+    );
+
     const completionByShow: Record<string, { total: number; avgCompletion: number }> = {};
     for (const c of (completions || []) as any[]) {
       if (!completionByShow[c.show_name]) {
