@@ -6,53 +6,51 @@
 
 @layer base {
   :root {
-    --background: 240 15% 4%;
-    --foreground: 40 20% 93%;
+    --background: 230 20% 5%;
+    --foreground: 40 15% 92%;
 
-    --card: 240 10% 8%;
-    --card-foreground: 40 20% 93%;
+    --card: 230 15% 9%;
+    --card-foreground: 40 15% 92%;
 
-    --popover: 240 10% 8%;
-    --popover-foreground: 40 20% 93%;
+    --popover: 230 15% 9%;
+    --popover-foreground: 40 15% 92%;
 
-    --primary: 263 70% 55%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 185 72% 48%;
+    --primary-foreground: 230 20% 5%;
 
-    --secondary: 240 10% 12%;
-    --secondary-foreground: 40 15% 75%;
+    --secondary: 230 12% 13%;
+    --secondary-foreground: 40 10% 72%;
 
-    --muted: 240 8% 14%;
-    --muted-foreground: 240 5% 45%;
+    --muted: 230 10% 15%;
+    --muted-foreground: 230 8% 45%;
 
-    --accent: 38 92% 50%;
-    --accent-foreground: 240 15% 4%;
+    --accent: 185 72% 48%;
+    --accent-foreground: 230 20% 5%;
 
     --destructive: 0 72% 51%;
-    --destructive-foreground: 40 20% 93%;
+    --destructive-foreground: 40 15% 92%;
 
-    --border: 263 20% 18%;
-    --input: 240 10% 14%;
-    --ring: 263 70% 55%;
+    --border: 230 12% 16%;
+    --input: 230 12% 14%;
+    --ring: 185 72% 48%;
 
     --radius: 0.875rem;
 
-    --sidebar-background: 240 12% 6%;
-    --sidebar-foreground: 40 20% 93%;
-    --sidebar-primary: 263 70% 55%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 10% 12%;
-    --sidebar-accent-foreground: 40 20% 93%;
-    --sidebar-border: 263 20% 18%;
-    --sidebar-ring: 263 70% 55%;
+    --sidebar-background: 230 18% 7%;
+    --sidebar-foreground: 40 15% 92%;
+    --sidebar-primary: 185 72% 48%;
+    --sidebar-primary-foreground: 230 20% 5%;
+    --sidebar-accent: 230 12% 13%;
+    --sidebar-accent-foreground: 40 15% 92%;
+    --sidebar-border: 230 12% 16%;
+    --sidebar-ring: 185 72% 48%;
 
-    --gradient-gold: linear-gradient(135deg, hsl(263, 70%, 55%), hsl(280, 80%, 60%));
-    --gradient-amber: linear-gradient(135deg, hsl(38, 92%, 50%), hsl(28, 95%, 55%));
-    --gradient-card: linear-gradient(145deg, hsl(240, 10%, 10%) 0%, hsl(240, 12%, 6%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(260, 20%, 8%) 0%, hsl(240, 15%, 3%) 100%);
-    --gradient-glass: linear-gradient(135deg, hsl(263 70% 55% / 0.08), hsl(38 92% 50% / 0.04));
-    --shadow-glow: 0 0 60px -15px hsl(263 70% 55% / 0.35);
-    --shadow-amber: 0 0 40px -10px hsl(38 92% 50% / 0.25);
-    --shadow-card: 0 8px 40px -12px hsl(263 70% 55% / 0.12), 0 2px 8px -2px hsl(0 0% 0% / 0.4);
+    --gradient-gold: linear-gradient(135deg, hsl(185, 72%, 48%), hsl(195, 80%, 55%));
+    --gradient-card: linear-gradient(145deg, hsl(230, 15%, 11%) 0%, hsl(230, 18%, 7%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(230, 20%, 7%) 0%, hsl(230, 22%, 3%) 100%);
+    --gradient-glass: linear-gradient(135deg, hsl(185 72% 48% / 0.06), hsl(185 72% 48% / 0.02));
+    --shadow-glow: 0 0 50px -15px hsl(185 72% 48% / 0.3);
+    --shadow-card: 0 8px 40px -12px hsl(185 72% 48% / 0.08), 0 2px 8px -2px hsl(0 0% 0% / 0.4);
   }
 }
 
@@ -74,19 +72,8 @@
     background-clip: text;
   }
 
-  .text-gradient-amber {
-    background: var(--gradient-amber);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
   .bg-gradient-gold {
     background: var(--gradient-gold);
-  }
-
-  .bg-gradient-amber {
-    background: var(--gradient-amber);
   }
 
   .bg-gradient-card {
@@ -101,28 +88,24 @@
     box-shadow: var(--shadow-glow);
   }
 
-  .shadow-amber {
-    box-shadow: var(--shadow-amber);
-  }
-
   .shadow-card {
     box-shadow: var(--shadow-card);
   }
 
   .glass {
-    background: hsl(240 10% 8% / 0.6);
+    background: hsl(230 15% 9% / 0.6);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid hsl(263 70% 55% / 0.12);
-    border-top-color: hsl(263 70% 55% / 0.2);
+    border: 1px solid hsl(185 72% 48% / 0.1);
+    border-top-color: hsl(185 72% 48% / 0.18);
   }
 
   .glass-strong {
-    background: hsl(240 10% 8% / 0.75);
+    background: hsl(230 15% 9% / 0.75);
     backdrop-filter: blur(32px);
     -webkit-backdrop-filter: blur(32px);
-    border: 1px solid hsl(263 70% 55% / 0.15);
-    border-top-color: hsl(263 70% 55% / 0.25);
+    border: 1px solid hsl(185 72% 48% / 0.12);
+    border-top-color: hsl(185 72% 48% / 0.22);
   }
 
   .noise {

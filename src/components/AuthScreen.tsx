@@ -32,9 +32,8 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
 
   return (
     <div className="min-h-screen bg-gradient-hero noise flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Ambient orbs */}
-      <div className="absolute top-1/3 -left-40 w-96 h-96 rounded-full bg-primary/8 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/3 -right-40 w-80 h-80 rounded-full bg-accent/6 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 -left-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/3 -right-40 w-80 h-80 rounded-full bg-primary/3 blur-3xl pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -52,7 +51,7 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
             <Headphones className="w-8 h-8 text-primary-foreground" />
           </motion.div>
           <h1 className="text-4xl font-display font-bold text-foreground mb-2">
-            Pod<span className="text-gradient-gold">Sense</span>
+            Pod<span className="text-gradient-gold">Pulse</span>
           </h1>
           <p className="text-muted-foreground text-lg">
             AI-powered podcast discovery

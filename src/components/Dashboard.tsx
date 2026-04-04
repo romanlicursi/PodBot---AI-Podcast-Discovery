@@ -185,7 +185,7 @@ export function Dashboard({ onSignOut }: DashboardProps) {
                   ))}
                 </div>
                 <p className="text-center text-muted-foreground text-xs mt-8 tracking-wide">
-                  👆 Rate episodes & save to Spotify playlists — the algorithm learns from every interaction!
+                  👆 Rate episodes and save to Spotify playlists. The algorithm learns from every interaction!
                 </p>
               </div>
             )}
