@@ -68,7 +68,7 @@ function DNAVisual() {
           style={{
             width: "120px",
             rotate: `${i * 30}deg`,
-            background: "linear-gradient(90deg, transparent, hsl(185 72% 48% / 0.3), transparent)",
+            background: "linear-gradient(90deg, transparent, hsl(17 88% 56% / 0.3), transparent)",
           }}
           initial={{ opacity: 0, scaleX: 0 }}
           animate={{ opacity: [0, 0.6, 0], scaleX: [0, 1, 0] }}
