@@ -96,8 +96,8 @@
     background: hsl(230 15% 9% / 0.6);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid hsl(185 72% 48% / 0.1);
-    border-top-color: hsl(185 72% 48% / 0.18);
+    border: 1px solid hsl(17 88% 56% / 0.1);
+    border-top-color: hsl(17 88% 56% / 0.18);
   }
 
   .glass-strong {
