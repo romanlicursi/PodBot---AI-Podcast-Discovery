@@ -30,7 +30,8 @@ export function useSpotify() {
         body: { action: "get_auth_url", redirect_uri: redirectUri },
       });
       if (error) throw error;
-      window.location.href = data.auth_url;
+      // Open in new tab since Spotify blocks iframe embedding
+      window.open(data.auth_url, "_blank");
     } catch (err: any) {
       toast({ title: "Error", description: err.message, variant: "destructive" });
       setIsConnecting(false);
