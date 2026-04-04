@@ -12,7 +12,7 @@ const slides = [
     icon: Headphones,
     title: "Your Podcast DNA",
     subtitle: "We decode your listening patterns",
-    description: "PodPulse connects to your Spotify and analyzes every podcast episode you have ever played. Not just what you follow, but what you actually finish.",
+    description: "PodBot connects to your Spotify and analyzes every podcast episode you have ever played. Not just what you follow, but what you actually finish.",
     visual: "dna",
   },
   {
