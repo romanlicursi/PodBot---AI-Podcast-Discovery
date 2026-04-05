@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Headphones, Brain, BarChart3, Sparkles, ChevronRight, Zap, Target, TrendingUp } from "lucide-react";
+import { Headphones, Brain, TrendingUp, Sparkles, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface OnboardingWalkthroughProps {
@@ -40,17 +40,17 @@ const slides = [
 
 function DNAVisual() {
   return (
-    <div className="relative w-full h-52 flex items-center justify-center overflow-hidden">
+    <div className="relative w-full h-40 sm:h-52 flex items-center justify-center overflow-hidden">
       {[...Array(12)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-3 h-3 rounded-full bg-primary"
+          className="absolute w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-primary"
           style={{ boxShadow: "0 0 12px hsl(17 88% 56% / 0.5)" }}
           initial={{ opacity: 0 }}
           animate={{
             opacity: [0.3, 1, 0.3],
-            x: Math.sin((i / 12) * Math.PI * 2) * 60,
-            y: Math.cos((i / 12) * Math.PI * 2) * 40 + Math.sin(Date.now() / 1000 + i) * 10,
+            x: Math.sin((i / 12) * Math.PI * 2) * 50,
+            y: Math.cos((i / 12) * Math.PI * 2) * 35 + Math.sin(Date.now() / 1000 + i) * 10,
             scale: [0.8, 1.2, 0.8],
           }}
           transition={{
@@ -66,7 +66,7 @@ function DNAVisual() {
           key={`line-${i}`}
           className="absolute h-px"
           style={{
-            width: "120px",
+            width: "100px",
             rotate: `${i * 30}deg`,
             background: "linear-gradient(90deg, transparent, hsl(17 88% 56% / 0.3), transparent)",
           }}
@@ -76,14 +76,9 @@ function DNAVisual() {
         />
       ))}
       <motion.div
-        className="absolute w-20 h-20 rounded-full border-2 border-primary/20"
+        className="absolute w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-primary/20"
         animate={{ scale: [1, 1.3, 1], opacity: [0.3, 0.1, 0.3] }}
         transition={{ duration: 3, repeat: Infinity }}
-      />
-      <motion.div
-        className="absolute w-32 h-32 rounded-full border border-primary/10"
-        animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.05, 0.2] }}
-        transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
       />
     </div>
   );
@@ -97,14 +92,14 @@ function CompletionVisual() {
     { label: "Skipped", pct: 8, gradient: "from-destructive/50 to-destructive/30" },
   ];
   return (
-    <div className="w-full max-w-xs mx-auto space-y-4 py-6">
+    <div className="w-full max-w-[260px] sm:max-w-xs mx-auto space-y-3 sm:space-y-4 py-4 sm:py-6">
       {bars.map((bar, i) => (
-        <div key={bar.label} className="space-y-1.5">
-          <div className="flex justify-between text-xs tracking-wide">
+        <div key={bar.label} className="space-y-1">
+          <div className="flex justify-between text-[10px] sm:text-xs tracking-wide">
             <span className="text-muted-foreground uppercase font-medium">{bar.label}</span>
             <span className="text-foreground font-semibold">{bar.pct}%</span>
           </div>
-          <div className="h-2.5 rounded-full bg-secondary overflow-hidden">
+          <div className="h-2 sm:h-2.5 rounded-full bg-secondary overflow-hidden">
             <motion.div
               className={`h-full rounded-full bg-gradient-to-r ${bar.gradient}`}
               initial={{ width: 0 }}
@@ -120,16 +115,16 @@ function CompletionVisual() {
 
 function LearningVisual() {
   return (
-    <div className="relative w-full h-52 flex items-center justify-center">
+    <div className="relative w-full h-40 sm:h-52 flex items-center justify-center">
       {[
-        { icon: "👍", x: -50, y: -30, delay: 0 },
-        { icon: "🎧", x: 50, y: -20, delay: 0.3 },
-        { icon: "💾", x: -30, y: 30, delay: 0.6 },
-        { icon: "⏱", x: 40, y: 40, delay: 0.9 },
+        { icon: "👍", x: -40, y: -25, delay: 0 },
+        { icon: "🎧", x: 40, y: -18, delay: 0.3 },
+        { icon: "💾", x: -25, y: 25, delay: 0.6 },
+        { icon: "⏱", x: 35, y: 35, delay: 0.9 },
       ].map((item, i) => (
         <motion.div
           key={i}
-          className="absolute text-2xl"
+          className="absolute text-xl sm:text-2xl"
           initial={{ opacity: 0, scale: 0, x: item.x, y: item.y }}
           animate={{
             opacity: [0, 1, 1, 0],
@@ -146,11 +141,11 @@ function LearningVisual() {
         />
       ))}
       <motion.div
-        className="w-16 h-16 rounded-2xl bg-gradient-gold flex items-center justify-center z-10 shadow-glow"
+        className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-gold flex items-center justify-center z-10 shadow-glow"
         animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
         transition={{ duration: 4, repeat: Infinity }}
       >
-        <Brain className="w-8 h-8 text-primary-foreground" />
+        <Brain className="w-7 h-7 sm:w-8 sm:h-8 text-primary-foreground" />
       </motion.div>
     </div>
   );
@@ -158,26 +153,20 @@ function LearningVisual() {
 
 function ReadyVisual() {
   return (
-    <div className="relative w-full h-52 flex items-center justify-center">
+    <div className="relative w-full h-40 sm:h-52 flex items-center justify-center">
       <motion.div
-        className="absolute w-44 h-44 rounded-full"
+        className="absolute w-36 h-36 sm:w-44 sm:h-44 rounded-full"
         style={{ background: "radial-gradient(circle, hsl(17 88% 56% / 0.15), transparent)" }}
         animate={{ scale: [1, 1.4, 1], opacity: [0.5, 0.2, 0.5] }}
         transition={{ duration: 3, repeat: Infinity }}
       />
       <motion.div
-        className="absolute w-28 h-28 rounded-full"
-        style={{ background: "radial-gradient(circle, hsl(17 88% 56% / 0.08), transparent)" }}
-        animate={{ scale: [1.2, 0.9, 1.2], opacity: [0.3, 0.5, 0.3] }}
-        transition={{ duration: 4, repeat: Infinity, delay: 0.5 }}
-      />
-      <motion.div
-        className="w-20 h-20 rounded-2xl bg-gradient-gold flex items-center justify-center shadow-glow"
+        className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-gold flex items-center justify-center shadow-glow"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
       >
-        <Sparkles className="w-10 h-10 text-primary-foreground" />
+        <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-primary-foreground" />
       </motion.div>
     </div>
   );
@@ -197,9 +186,9 @@ export function OnboardingWalkthrough({ onComplete }: OnboardingWalkthroughProps
   const Visual = visuals[slide.visual];
 
   return (
-    <div className="min-h-screen bg-gradient-hero noise flex flex-col items-center justify-center p-6 relative overflow-hidden">
-      <div className="absolute top-1/4 -left-32 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-32 w-80 h-80 rounded-full bg-primary/3 blur-3xl pointer-events-none" />
+    <div className="min-h-screen bg-gradient-hero noise flex flex-col items-center justify-center px-4 sm:px-6 py-8 relative overflow-hidden">
+      <div className="absolute top-1/4 -left-32 w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 -right-32 w-64 sm:w-80 h-64 sm:h-80 rounded-full bg-primary/3 blur-3xl pointer-events-none" />
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -217,18 +206,18 @@ export function OnboardingWalkthrough({ onComplete }: OnboardingWalkthroughProps
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <h1 className="text-3xl font-display font-bold text-foreground mt-8 mb-2">
+            <h1 className="text-2xl sm:text-3xl font-display font-bold text-foreground mt-6 sm:mt-8 mb-2">
               {slide.title}
             </h1>
-            <p className="text-primary font-medium text-sm mb-4 tracking-wide">{slide.subtitle}</p>
-            <p className="text-muted-foreground leading-relaxed max-w-sm mx-auto text-[15px]">
+            <p className="text-primary font-medium text-xs sm:text-sm mb-3 sm:mb-4 tracking-wide">{slide.subtitle}</p>
+            <p className="text-muted-foreground leading-relaxed max-w-sm mx-auto text-sm sm:text-[15px] px-2">
               {slide.description}
             </p>
           </motion.div>
         </motion.div>
       </AnimatePresence>
 
-      <div className="flex gap-2.5 mt-12 mb-8 relative z-10">
+      <div className="flex gap-2.5 mt-8 sm:mt-12 mb-6 sm:mb-8 relative z-10">
         {slides.map((_, i) => (
           <button
             key={i}
@@ -240,7 +229,7 @@ export function OnboardingWalkthrough({ onComplete }: OnboardingWalkthroughProps
         ))}
       </div>
 
-      <div className="flex gap-3 relative z-10">
+      <div className="flex gap-3 relative z-10 w-full max-w-sm px-4">
         {!isLast ? (
           <>
             <Button
@@ -252,7 +241,7 @@ export function OnboardingWalkthrough({ onComplete }: OnboardingWalkthroughProps
             </Button>
             <Button
               onClick={() => setCurrent(current + 1)}
-              className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-6 shadow-glow btn-press"
+              className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-6 shadow-glow btn-press flex-1 sm:flex-none"
             >
               Next <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
@@ -261,7 +250,7 @@ export function OnboardingWalkthrough({ onComplete }: OnboardingWalkthroughProps
           <Button
             onClick={onComplete}
             size="lg"
-            className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-8 shadow-glow btn-press"
+            className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-6 sm:px-8 shadow-glow btn-press w-full sm:w-auto text-sm sm:text-base"
           >
             <Sparkles className="w-4 h-4 mr-2" /> Sync and Analyze Listening History
           </Button>
