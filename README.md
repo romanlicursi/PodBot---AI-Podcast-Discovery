@@ -1,66 +1,56 @@
-# PodBot — AI-Powered Podcast Recommendations
+# PodBot — AI Podcast Discovery
 
-PodBot connects to your Spotify account, analyzes your podcast listening history, and uses AI to recommend episodes matched to your taste profile. Connect once, get personalized picks, and save your favorites directly to a Spotify playlist.
+**Live at [podbot.guru](https://podbot.guru)**
 
-## Features
+PodBot is a personalized podcast discovery app that connects to your Spotify account and uses AI to recommend episodes matched to your actual listening taste — not generic charts or editorial picks.
 
-- **Spotify OAuth** — Secure account connection with full token management via Supabase Auth
-- **Listening Analysis** — Pulls podcast history and completion data to build a personal taste profile
-- **AI Recommendations** — Episode suggestions generated from your actual listening patterns
-- **Playlist Save** — Add recommended episodes directly to any of your Spotify playlists
-- **Onboarding Flow** — Guided walkthrough for first-time users
+---
 
-## Stack
+## What It Does
+
+Most podcast apps recommend based on category tags or popularity. PodBot works differently: it pulls your real listening history from Spotify, analyzes your behavior patterns (what you finish, what you skip, what you return to), and builds a taste profile that feeds into an AI recommendation engine.
+
+The result is episode-level recommendations — not just "you might like this show," but specific episodes, matched to your specific preferences.
+
+---
+
+## How the Recommendation Engine Works
+
+1. **OAuth Connection** — User authenticates with Spotify via OAuth 2.0. Tokens are managed and refreshed securely through Supabase Auth, not stored client-side.
+
+2. **Behavioral Analysis** — The app fetches listening history from the Spotify Web API: played episodes, completion rates, and frequency patterns. This raw data is processed to extract signal (what genres, lengths, and formats the user actually engages with) and filter out noise (episodes played briefly or skipped).
+
+3. **Taste Profile Construction** — The behavioral signals are structured into a taste profile: preferred episode length, topic clusters, host style patterns, and listening cadence. This profile is persisted in Supabase so recommendations improve over time as more data accumulates.
+
+4. **AI Recommendation Generation** — The taste profile is passed to an AI layer that maps it against a corpus of available episodes and ranks them by predicted fit. Recommendations are surfaced as a ranked list with explanations for why each episode was selected.
+
+5. **Playlist Integration** — Users can save any recommended episode directly to a Spotify playlist, closing the loop from discovery to action.
+
+---
+
+## Tech Stack
 
 | Layer | Tech |
 |-------|------|
 | Frontend | React 18, TypeScript, Vite (SWC) |
 | UI | Tailwind CSS, shadcn/ui, Framer Motion |
-| State | TanStack React Query, React Hook Form, Zod |
-| Backend | Supabase (auth, database, edge functions) |
+| State & Data | TanStack React Query, React Hook Form, Zod |
+| Backend | Supabase (auth, PostgreSQL database, edge functions) |
 | API | Spotify Web API (OAuth 2.0) |
 | Testing | Vitest, Playwright |
 
-## Getting Started
+---
 
-### Prerequisites
+## Skills Demonstrated
 
-- [Bun](https://bun.sh) or Node.js 18+
-- A [Spotify Developer](https://developer.spotify.com/dashboard) app with a registered redirect URI
-- A [Supabase](https://supabase.com) project
+- **OAuth 2.0 integration** — full authorization code flow with token refresh, scope management, and secure storage
+- **Third-party API design** — wrapping the Spotify Web API in typed hooks with error handling, caching, and loading states via TanStack Query
+- **Supabase edge functions** — serverless backend logic for data processing and AI calls without a separate server
+- **AI-driven product logic** — translating behavioral data into structured prompts and surfacing ranked, explainable recommendations
+- **Full-stack TypeScript** — end-to-end type safety from API response to UI component
+- **Component architecture** — composable UI built on Radix UI primitives with consistent design via shadcn/ui
 
-### Setup
-
-1. Clone the repo
-   ```bash
-   git clone https://github.com/romanlicursi/ear-decoder-bot.git
-   cd ear-decoder-bot
-   ```
-
-2. Install dependencies
-   ```bash
-   bun install
-   ```
-
-3. Create a `.env` file at the project root:
-   ```
-   VITE_SUPABASE_URL=your_supabase_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   ```
-
-4. Add your Spotify client credentials to the Supabase edge function secrets (see `/supabase/functions`).
-
-5. Start the dev server
-   ```bash
-   bun dev
-   ```
-
-## How It Works
-
-1. **Connect** — User authenticates with Spotify via OAuth 2.0; tokens are stored and managed by Supabase Auth
-2. **Analyze** — Edge functions call the Spotify API to fetch listening history and build a taste profile
-3. **Recommend** — AI processes the taste profile and returns ranked podcast episode suggestions
-4. **Save** — Users can add any recommendation directly to a Spotify playlist
+---
 
 ## License
 
