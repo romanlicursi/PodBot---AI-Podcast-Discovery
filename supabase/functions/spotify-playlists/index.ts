@@ -72,7 +72,7 @@ serve(async (req) => {
     if (!user) throw new Error("Invalid user");
 
     const accessToken = await getValidToken(supabase, user.id, SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET);
-    const { action, playlist_id, episode_uri } = await req.json();
+    const { action, playlist_id, episode_uri, episode_name, show_name } = await req.json();
 
     if (action === "get_playlists") {
       console.log("Fetching playlists for user:", user.id);
@@ -101,6 +101,31 @@ serve(async (req) => {
       }));
 
       return new Response(JSON.stringify({ playlists }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (action === "search_episode") {
+      if (!episode_name || !show_name) {
+        throw new Error("episode_name and show_name are required for search");
+      }
+
+      const query = encodeURIComponent(`${episode_name} ${show_name}`);
+      const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=episode&limit=1`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      if (!response.ok) {
+        return new Response(JSON.stringify({ episode_uri: null }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const data = await response.json();
+      const ep = data?.episodes?.items?.[0];
+      const uri = ep ? `spotify:episode:${ep.id}` : null;
+
+      return new Response(JSON.stringify({ episode_uri: uri }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

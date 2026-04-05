@@ -32,8 +32,8 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
 
   return (
     <div className="min-h-screen bg-gradient-hero noise flex items-center justify-center p-4 relative overflow-hidden">
-      <div className="absolute top-1/3 -left-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/3 -right-40 w-80 h-80 rounded-full bg-primary/3 blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 -left-40 w-72 sm:w-96 h-72 sm:h-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/3 -right-40 w-64 sm:w-80 h-64 sm:h-80 rounded-full bg-primary/3 blur-3xl pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -41,25 +41,25 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
         transition={{ duration: 0.6 }}
         className="w-full max-w-md relative z-10"
       >
-        <div className="text-center mb-10">
+        <div className="text-center mb-8 sm:mb-10">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-gold shadow-glow mb-6"
+            className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-gold shadow-glow mb-4 sm:mb-6"
           >
-            <Headphones className="w-8 h-8 text-primary-foreground" />
+            <Headphones className="w-7 h-7 sm:w-8 sm:h-8 text-primary-foreground" />
           </motion.div>
-          <h1 className="text-4xl font-display font-bold text-foreground mb-2">
+          <h1 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-2">
             Pod<span className="text-gradient-gold">Bot</span>
           </h1>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-base sm:text-lg">
             AI-powered podcast discovery
           </p>
         </div>
 
-        <div className="glass-strong rounded-2xl p-6 shadow-card">
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="glass-strong rounded-2xl p-5 sm:p-6 shadow-card">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
@@ -67,7 +67,7 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 bg-secondary/50 border-border h-12 focus:border-primary/50 transition-colors"
+                className="pl-10 bg-secondary/50 border-border h-11 sm:h-12 focus:border-primary/50 transition-colors text-sm sm:text-base"
                 required
               />
             </div>
@@ -78,7 +78,7 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 bg-secondary/50 border-border h-12 focus:border-primary/50 transition-colors"
+                className="pl-10 bg-secondary/50 border-border h-11 sm:h-12 focus:border-primary/50 transition-colors text-sm sm:text-base"
                 required
                 minLength={6}
               />
@@ -94,14 +94,14 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-12 bg-gradient-gold text-primary-foreground font-semibold text-base hover:opacity-90 transition-opacity shadow-glow btn-press"
+              className="w-full h-11 sm:h-12 bg-gradient-gold text-primary-foreground font-semibold text-sm sm:text-base hover:opacity-90 transition-opacity shadow-glow btn-press"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : isSignUp ? "Create Account" : "Sign In"}
             </Button>
           </form>
         </div>
 
-        <p className="text-center mt-6 text-muted-foreground text-sm">
+        <p className="text-center mt-5 sm:mt-6 text-muted-foreground text-sm">
           {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
           <button
             onClick={() => setIsSignUp(!isSignUp)}

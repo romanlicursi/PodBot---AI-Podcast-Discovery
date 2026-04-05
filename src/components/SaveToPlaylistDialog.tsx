@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Music, Loader2, CheckCircle2, Search } from "lucide-react";
 import {
   Dialog,
@@ -74,17 +74,32 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
     setSaving(playlist.id);
 
     try {
-      const episodeUri = episode.episode_id
+      // Use episode_id if available, otherwise search for it
+      let episodeUri = episode.episode_id
         ? `spotify:episode:${episode.episode_id}`
         : null;
 
       if (!episodeUri) {
-        toast({ title: "Can't add", description: "This episode doesn't have a Spotify ID to add.", variant: "destructive" });
+        // Try to find the episode via the edge function search
+        const { data: searchData } = await supabase.functions.invoke("spotify-playlists", {
+          body: {
+            action: "search_episode",
+            episode_name: episode.episode_name,
+            show_name: episode.show_name,
+          },
+        });
+        if (searchData?.episode_uri) {
+          episodeUri = searchData.episode_uri;
+        }
+      }
+
+      if (!episodeUri) {
+        toast({ title: "Episode not found on Spotify", description: "Try searching for it manually on Spotify.", variant: "destructive" });
         setSaving(null);
         return;
       }
 
-      const { error } = await supabase.functions.invoke("spotify-playlists", {
+      const { data, error } = await supabase.functions.invoke("spotify-playlists", {
         body: {
           action: "add_to_playlist",
           playlist_id: playlist.id,
@@ -92,6 +107,7 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
         },
       });
       if (error) throw error;
+      if (data?.error) throw new Error(data.error);
 
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -122,9 +138,9 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="glass-strong border-border max-w-sm max-h-[80vh] flex flex-col shadow-glow">
+      <DialogContent className="glass-strong border-border max-w-[calc(100vw-2rem)] sm:max-w-sm max-h-[80vh] flex flex-col shadow-glow mx-auto">
         <DialogHeader>
-          <DialogTitle className="font-display text-foreground tracking-tight">Add to Spotify Playlist</DialogTitle>
+          <DialogTitle className="font-display text-foreground tracking-tight text-base sm:text-lg">Add to Spotify Playlist</DialogTitle>
         </DialogHeader>
 
         {episode && (
@@ -143,7 +159,7 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
           />
         </div>
 
-        <div className="flex-1 overflow-y-auto space-y-1.5 min-h-0 pr-1">
+        <div className="flex-1 overflow-y-auto space-y-1.5 min-h-0 pr-1 -mr-1">
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="w-5 h-5 animate-spin text-primary" />
@@ -158,7 +174,7 @@ export function SaveToPlaylistDialog({ open, onClose, episode }: SaveToPlaylistD
                 key={p.id}
                 onClick={() => handleAddToPlaylist(p)}
                 disabled={saving !== null}
-                className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 transition-all text-left disabled:opacity-50 group/item"
+                className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-primary/5 active:bg-primary/10 transition-all text-left disabled:opacity-50 group/item"
               >
                 <div className="w-10 h-10 rounded-lg bg-secondary/50 flex-shrink-0 overflow-hidden flex items-center justify-center ring-1 ring-border">
                   {p.image_url ? (
