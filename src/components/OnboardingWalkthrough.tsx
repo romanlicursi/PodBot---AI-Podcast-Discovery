@@ -19,14 +19,14 @@ const slides = [
     icon: Brain,
     title: "Completion Intelligence",
     subtitle: "We know what you really love",
-    description: "An episode you finished 100%? That is a strong signal. One you abandoned after 3 minutes? We learn from that too. Your completion patterns reveal your true taste, far better than likes or follows ever could.",
+    description: "An episode you finished 100%? That's a strong signal. One you abandoned after 3 minutes? We learn from that too. Your completion patterns reveal your true taste, far better than likes or follows ever could.",
     visual: "completion",
   },
   {
     icon: TrendingUp,
     title: "Always Learning",
     subtitle: "Gets smarter with every interaction",
-    description: "Rate recommendations, save episodes to your Spotify playlists, and keep listening. Every signal feeds back into your taste profile. The algorithm evolves with you.",
+    description: "Rate recommendations, save episodes to your Spotify playlists, and keep listening. Every signal feeds back into your taste profile. The algorithm evolves with you, compounding over time to build a deeper understanding of what you love as a podcast listener.",
     visual: "learning",
   },
   {
