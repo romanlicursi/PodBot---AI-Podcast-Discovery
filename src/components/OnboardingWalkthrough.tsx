@@ -33,8 +33,8 @@ const slides = [
   {
     icon: Sparkles,
     title: "Ready to Discover",
-    subtitle: "Sync and analyze your listening history",
-    description: "Connect your Spotify and let PodBot decode your podcast DNA. You will get personalized recommendations powered by AI that truly understands what you love.",
+    subtitle: "PodBot is in private beta",
+    description: "We're letting in a small group of testers at a time. Join the waitlist to get early access when public release opens, or take a quick demo tour right now to see what PodBot looks like in action.",
     visual: "ready",
   },
 ];
