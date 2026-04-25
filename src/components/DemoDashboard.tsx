@@ -141,7 +141,7 @@ export function DemoDashboard({ onExit, onJoinWaitlist }: DemoDashboardProps) {
             ))}
           </div>
           <p className="text-center text-muted-foreground text-xs mt-6 sm:mt-8 tracking-wide px-4">
-            Like the experience? Sign up to get personalized picks from your actual Spotify history.
+            Like what you see? Join the waitlist — we'll let you in when public access opens.
           </p>
         </div>
       </main>
