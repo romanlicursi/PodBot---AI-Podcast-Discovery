@@ -254,7 +254,7 @@ export function OnboardingWalkthrough({ onComplete, onTryDemo }: OnboardingWalkt
               size="lg"
               className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-6 sm:px-8 shadow-glow btn-press w-full text-sm sm:text-base"
             >
-              <Sparkles className="w-4 h-4 mr-2" /> Sync and Analyze Listening History
+              <Sparkles className="w-4 h-4 mr-2" /> Join the waitlist
             </Button>
             {onTryDemo && (
               <button
@@ -262,7 +262,7 @@ export function OnboardingWalkthrough({ onComplete, onTryDemo }: OnboardingWalkt
                 className="w-full h-11 sm:h-12 rounded-md border border-border bg-secondary/30 hover:bg-secondary/60 text-foreground text-sm font-medium transition-colors btn-press flex items-center justify-center gap-2"
               >
                 <Eye className="w-4 h-4" />
-                Try the demo first (no signup)
+                See a demo of the app first
               </button>
             )}
           </div>
