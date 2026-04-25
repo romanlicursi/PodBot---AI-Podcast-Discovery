@@ -73,16 +73,18 @@ export function DemoDashboard({ onExit, onJoinWaitlist }: DemoDashboardProps) {
             <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
             <p className="text-xs sm:text-sm text-foreground truncate">
               <span className="font-semibold">Demo mode.</span>{" "}
-              <span className="text-muted-foreground">Sample data. Sign up for real recommendations.</span>
+              <span className="text-muted-foreground">Sample data — interactions are read-only.</span>
             </p>
           </div>
-          <Button
-            size="sm"
-            onClick={onExit}
-            className="bg-gradient-gold text-primary-foreground hover:opacity-90 text-xs sm:text-sm h-7 sm:h-8 px-3 sm:px-4 btn-press flex-shrink-0"
-          >
-            Sign up
-          </Button>
+          {onJoinWaitlist && (
+            <Button
+              size="sm"
+              onClick={onJoinWaitlist}
+              className="bg-gradient-gold text-primary-foreground hover:opacity-90 text-xs sm:text-sm h-7 sm:h-8 px-3 sm:px-4 btn-press flex-shrink-0"
+            >
+              Join waitlist
+            </Button>
+          )}
         </div>
       </div>
 
