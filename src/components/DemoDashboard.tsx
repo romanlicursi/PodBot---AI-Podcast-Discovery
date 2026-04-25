@@ -22,7 +22,7 @@ export function DemoDashboard({ onExit, onJoinWaitlist }: DemoDashboardProps) {
       setRecommendations([...DEMO_RECOMMENDATIONS].sort(() => Math.random() - 0.5));
       setIsRefreshing(false);
       toast.success("Fresh recommendations curated", {
-        description: "In demo mode, refreshes shuffle a sample set. Sign up to get real picks.",
+        description: "In demo mode, refreshes shuffle a sample set.",
       });
     }, 1200);
   };
@@ -30,13 +30,13 @@ export function DemoDashboard({ onExit, onJoinWaitlist }: DemoDashboardProps) {
   const handleFeedback = (_id: string, type: "liked" | "disliked" | "saved") => {
     toast.success(
       type === "liked" ? "Marked as liked" : type === "disliked" ? "Marked as not for you" : "Saved",
-      { description: "Sign up and connect Spotify to make feedback shape your real recommendations." },
+      { description: "Demo mode — feedback isn't saved." },
     );
   };
 
   const handleSaveToPlaylist = () => {
     toast("Save to Spotify playlist", {
-      description: "Available once you sign up and connect your Spotify account.",
+      description: "Available in the full app once public access opens.",
     });
   };
 
