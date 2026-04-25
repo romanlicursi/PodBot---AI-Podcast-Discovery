@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Headphones, Brain, TrendingUp, Sparkles, ChevronRight } from "lucide-react";
+import { Headphones, Brain, TrendingUp, Sparkles, ChevronRight, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface OnboardingWalkthroughProps {
   onComplete: () => void;
+  onTryDemo?: () => void;
 }
 
 const slides = [
