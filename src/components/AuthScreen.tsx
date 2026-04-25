@@ -2,14 +2,14 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Headphones, Mail, Lock, Loader2, Eye } from "lucide-react";
+import { Headphones, Mail, Lock, Loader2, ArrowLeft } from "lucide-react";
 
 interface AuthScreenProps {
   onAuth: (email: string, password: string, isSignUp: boolean) => Promise<{ error: any }>;
-  onTryDemo?: () => void;
+  onBack?: () => void;
 }
 
-export function AuthScreen({ onAuth, onTryDemo }: AuthScreenProps) {
+export function AuthScreen({ onAuth, onBack }: AuthScreenProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
