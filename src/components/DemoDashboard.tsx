@@ -9,9 +9,10 @@ import { DEMO_RECOMMENDATIONS, DEMO_TASTE_PROFILE } from "@/lib/demoData";
 
 interface DemoDashboardProps {
   onExit: () => void;
+  onJoinWaitlist?: () => void;
 }
 
-export function DemoDashboard({ onExit }: DemoDashboardProps) {
+export function DemoDashboard({ onExit, onJoinWaitlist }: DemoDashboardProps) {
   const [recommendations, setRecommendations] = useState(DEMO_RECOMMENDATIONS);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
