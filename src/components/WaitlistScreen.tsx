@@ -139,6 +139,18 @@ export function WaitlistScreen({ onTryDemo, onSignIn }: WaitlistScreenProps) {
         <p className="text-center text-muted-foreground text-xs mt-2 px-2">
           A read-only preview with sample data. No signup, no Spotify needed.
         </p>
+
+        {onSignIn && (
+          <p className="text-center mt-6 sm:mt-7 text-muted-foreground text-xs">
+            Already have beta access?{" "}
+            <button
+              onClick={onSignIn}
+              className="text-primary hover:underline font-medium"
+            >
+              Sign in
+            </button>
+          </p>
+        )}
       </motion.div>
     </div>
   );
