@@ -7,9 +7,10 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface WaitlistScreenProps {
   onTryDemo: () => void;
+  onSignIn?: () => void;
 }
 
-export function WaitlistScreen({ onTryDemo }: WaitlistScreenProps) {
+export function WaitlistScreen({ onTryDemo, onSignIn }: WaitlistScreenProps) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
