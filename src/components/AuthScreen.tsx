@@ -2,13 +2,14 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Headphones, Mail, Lock, Loader2 } from "lucide-react";
+import { Headphones, Mail, Lock, Loader2, Eye } from "lucide-react";
 
 interface AuthScreenProps {
   onAuth: (email: string, password: string, isSignUp: boolean) => Promise<{ error: any }>;
+  onTryDemo?: () => void;
 }
 
-export function AuthScreen({ onAuth }: AuthScreenProps) {
+export function AuthScreen({ onAuth, onTryDemo }: AuthScreenProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
@@ -110,6 +111,26 @@ export function AuthScreen({ onAuth }: AuthScreenProps) {
             {isSignUp ? "Sign in" : "Sign up"}
           </button>
         </p>
+
+        {onTryDemo && (
+          <>
+            <div className="flex items-center gap-3 mt-6 sm:mt-7">
+              <div className="flex-1 h-px bg-border" />
+              <span className="text-muted-foreground text-xs uppercase tracking-wider">or</span>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+            <button
+              onClick={onTryDemo}
+              className="w-full mt-4 sm:mt-5 h-11 sm:h-12 rounded-md border border-border bg-secondary/30 hover:bg-secondary/60 text-foreground text-sm sm:text-base font-medium transition-colors btn-press flex items-center justify-center gap-2"
+            >
+              <Eye className="w-4 h-4" />
+              Try the demo (no signup)
+            </button>
+            <p className="text-center text-muted-foreground text-xs mt-2 px-2">
+              Explore the full experience with sample data.
+            </p>
+          </>
+        )}
       </motion.div>
     </div>
   );
