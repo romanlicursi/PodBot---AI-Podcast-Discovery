@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Headphones, Brain, TrendingUp, Sparkles, ChevronRight } from "lucide-react";
+import { Headphones, Brain, TrendingUp, Sparkles, ChevronRight, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface OnboardingWalkthroughProps {
   onComplete: () => void;
+  onTryDemo?: () => void;
 }
 
 const slides = [
@@ -179,7 +180,7 @@ const visuals: Record<string, () => JSX.Element> = {
   ready: ReadyVisual,
 };
 
-export function OnboardingWalkthrough({ onComplete }: OnboardingWalkthroughProps) {
+export function OnboardingWalkthrough({ onComplete, onTryDemo }: OnboardingWalkthroughProps) {
   const [current, setCurrent] = useState(0);
   const slide = slides[current];
   const isLast = current === slides.length - 1;
@@ -247,13 +248,24 @@ export function OnboardingWalkthrough({ onComplete }: OnboardingWalkthroughProps
             </Button>
           </>
         ) : (
-          <Button
-            onClick={onComplete}
-            size="lg"
-            className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-6 sm:px-8 shadow-glow btn-press w-full sm:w-auto text-sm sm:text-base"
-          >
-            <Sparkles className="w-4 h-4 mr-2" /> Sync and Analyze Listening History
-          </Button>
+          <div className="w-full flex flex-col gap-3">
+            <Button
+              onClick={onComplete}
+              size="lg"
+              className="bg-gradient-gold text-primary-foreground hover:opacity-90 font-semibold px-6 sm:px-8 shadow-glow btn-press w-full text-sm sm:text-base"
+            >
+              <Sparkles className="w-4 h-4 mr-2" /> Sync and Analyze Listening History
+            </Button>
+            {onTryDemo && (
+              <button
+                onClick={onTryDemo}
+                className="w-full h-11 sm:h-12 rounded-md border border-border bg-secondary/30 hover:bg-secondary/60 text-foreground text-sm font-medium transition-colors btn-press flex items-center justify-center gap-2"
+              >
+                <Eye className="w-4 h-4" />
+                Try the demo first (no signup)
+              </button>
+            )}
+          </div>
         )}
       </div>
     </div>
