@@ -4,12 +4,14 @@ import { AuthScreen } from "@/components/AuthScreen";
 import { Dashboard } from "@/components/Dashboard";
 import { DemoDashboard } from "@/components/DemoDashboard";
 import { OnboardingWalkthrough } from "@/components/OnboardingWalkthrough";
+import { WaitlistScreen } from "@/components/WaitlistScreen";
 import { Loader2 } from "lucide-react";
 
 const Index = () => {
   const { session, loading, signUp, signIn, signOut } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [demoMode, setDemoMode] = useState(false);
+  const [showSignIn, setShowSignIn] = useState(false);
 
   if (loading) {
     return (
@@ -26,6 +28,10 @@ const Index = () => {
           setDemoMode(false);
           setShowOnboarding(false);
         }}
+        onJoinWaitlist={() => {
+          setDemoMode(false);
+          setShowOnboarding(false);
+        }}
       />
     );
   }
@@ -39,12 +45,20 @@ const Index = () => {
         />
       );
     }
+    if (showSignIn) {
+      return (
+        <AuthScreen
+          onAuth={async (email, password, isSignUp) => {
+            return isSignUp ? signUp(email, password) : signIn(email, password);
+          }}
+          onBack={() => setShowSignIn(false)}
+        />
+      );
+    }
     return (
-      <AuthScreen
-        onAuth={async (email, password, isSignUp) => {
-          return isSignUp ? signUp(email, password) : signIn(email, password);
-        }}
+      <WaitlistScreen
         onTryDemo={() => setDemoMode(true)}
+        onSignIn={() => setShowSignIn(true)}
       />
     );
   }
