@@ -2,14 +2,14 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Headphones, Mail, Lock, Loader2, Eye } from "lucide-react";
+import { Headphones, Mail, Lock, Loader2, ArrowLeft } from "lucide-react";
 
 interface AuthScreenProps {
   onAuth: (email: string, password: string, isSignUp: boolean) => Promise<{ error: any }>;
-  onTryDemo?: () => void;
+  onBack?: () => void;
 }
 
-export function AuthScreen({ onAuth, onTryDemo }: AuthScreenProps) {
+export function AuthScreen({ onAuth, onBack }: AuthScreenProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
@@ -112,24 +112,27 @@ export function AuthScreen({ onAuth, onTryDemo }: AuthScreenProps) {
           </button>
         </p>
 
-        {onTryDemo && (
-          <>
-            <div className="flex items-center gap-3 mt-6 sm:mt-7">
-              <div className="flex-1 h-px bg-border" />
-              <span className="text-muted-foreground text-xs uppercase tracking-wider">or</span>
-              <div className="flex-1 h-px bg-border" />
-            </div>
-            <button
-              onClick={onTryDemo}
-              className="w-full mt-4 sm:mt-5 h-11 sm:h-12 rounded-md border border-border bg-secondary/30 hover:bg-secondary/60 text-foreground text-sm sm:text-base font-medium transition-colors btn-press flex items-center justify-center gap-2"
-            >
-              <Eye className="w-4 h-4" />
-              Try the demo (no signup)
+        <p className="text-center text-muted-foreground text-[11px] sm:text-xs mt-4 px-4">
+          Sign-in is restricted to approved beta testers. New here?{" "}
+          {onBack ? (
+            <button onClick={onBack} className="text-primary hover:underline font-medium">
+              Join the waitlist
             </button>
-            <p className="text-center text-muted-foreground text-xs mt-2 px-2">
-              Explore the full experience with sample data.
-            </p>
-          </>
+          ) : (
+            <span>Join the waitlist.</span>
+          )}
+        </p>
+
+        {onBack && (
+          <div className="flex justify-center mt-5 sm:mt-6">
+            <button
+              onClick={onBack}
+              className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-xs sm:text-sm transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Back
+            </button>
+          </div>
         )}
       </motion.div>
     </div>

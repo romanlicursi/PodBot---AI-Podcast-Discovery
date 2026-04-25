@@ -9,9 +9,10 @@ import { DEMO_RECOMMENDATIONS, DEMO_TASTE_PROFILE } from "@/lib/demoData";
 
 interface DemoDashboardProps {
   onExit: () => void;
+  onJoinWaitlist?: () => void;
 }
 
-export function DemoDashboard({ onExit }: DemoDashboardProps) {
+export function DemoDashboard({ onExit, onJoinWaitlist }: DemoDashboardProps) {
   const [recommendations, setRecommendations] = useState(DEMO_RECOMMENDATIONS);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -21,7 +22,7 @@ export function DemoDashboard({ onExit }: DemoDashboardProps) {
       setRecommendations([...DEMO_RECOMMENDATIONS].sort(() => Math.random() - 0.5));
       setIsRefreshing(false);
       toast.success("Fresh recommendations curated", {
-        description: "In demo mode, refreshes shuffle a sample set. Sign up to get real picks.",
+        description: "In demo mode, refreshes shuffle a sample set.",
       });
     }, 1200);
   };
@@ -29,13 +30,13 @@ export function DemoDashboard({ onExit }: DemoDashboardProps) {
   const handleFeedback = (_id: string, type: "liked" | "disliked" | "saved") => {
     toast.success(
       type === "liked" ? "Marked as liked" : type === "disliked" ? "Marked as not for you" : "Saved",
-      { description: "Sign up and connect Spotify to make feedback shape your real recommendations." },
+      { description: "Demo mode — feedback isn't saved." },
     );
   };
 
   const handleSaveToPlaylist = () => {
     toast("Save to Spotify playlist", {
-      description: "Available once you sign up and connect your Spotify account.",
+      description: "Available in the full app once public access opens.",
     });
   };
 
@@ -72,16 +73,18 @@ export function DemoDashboard({ onExit }: DemoDashboardProps) {
             <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
             <p className="text-xs sm:text-sm text-foreground truncate">
               <span className="font-semibold">Demo mode.</span>{" "}
-              <span className="text-muted-foreground">Sample data. Sign up for real recommendations.</span>
+              <span className="text-muted-foreground">Sample data — interactions are read-only.</span>
             </p>
           </div>
-          <Button
-            size="sm"
-            onClick={onExit}
-            className="bg-gradient-gold text-primary-foreground hover:opacity-90 text-xs sm:text-sm h-7 sm:h-8 px-3 sm:px-4 btn-press flex-shrink-0"
-          >
-            Sign up
-          </Button>
+          {onJoinWaitlist && (
+            <Button
+              size="sm"
+              onClick={onJoinWaitlist}
+              className="bg-gradient-gold text-primary-foreground hover:opacity-90 text-xs sm:text-sm h-7 sm:h-8 px-3 sm:px-4 btn-press flex-shrink-0"
+            >
+              Join waitlist
+            </Button>
+          )}
         </div>
       </div>
 
@@ -138,7 +141,7 @@ export function DemoDashboard({ onExit }: DemoDashboardProps) {
             ))}
           </div>
           <p className="text-center text-muted-foreground text-xs mt-6 sm:mt-8 tracking-wide px-4">
-            Like the experience? Sign up to get personalized picks from your actual Spotify history.
+            Like what you see? Join the waitlist — we'll let you in when public access opens.
           </p>
         </div>
       </main>
